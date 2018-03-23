@@ -121,6 +121,6 @@ Audio URL: {1}</code></pre>
 
 if __name__ == '__main__':
     if os.environ.get('PORT') is not None:
-        app.run(host='127.0.0.1', port=int(os.environ['PORT']))
+        app.run(host='0.0.0.0', port=int(os.environ['PORT']))
     else:
         app.run(host='127.0.0.1', port=5000)
