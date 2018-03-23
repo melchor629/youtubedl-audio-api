@@ -1,4 +1,4 @@
-import logging, io, re, json
+import logging, os, io, re, json
 from flask import Flask, request, render_template, jsonify
 from werkzeug.contrib.cache import SimpleCache
 import youtube_dl
@@ -120,7 +120,7 @@ Audio URL: {1}</code></pre>
 
 
 if __name__ == '__main__':
-    if os.environ['PORT']:
-        app.run(host='127.0.0.1', port=int(os.environ['PORT'])
+    if os.environ.get('PORT') is not None:
+        app.run(host='127.0.0.1', port=int(os.environ['PORT']))
     else:
         app.run(host='127.0.0.1', port=5000)
