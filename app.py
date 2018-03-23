@@ -76,14 +76,21 @@ def get_url(yid):
         'format': quality_id,
         'logger': log,
         'forceurl': True,
+        'forcetitle': True,
+        'forcethumbnail': True,
         'simulate': True
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         try:
             ydl.download([f'https://www.youtube.com/watch?v={yid}'])
-            url = log.get().split('\n')[:-1][-1:][0]
-            cache.set(f'yt_{yid}_{quality_id}', f'{{"status":"ok", "data":{{"url": "{url}"}}}}', timeout=10*60)
-            return jsonify({'url': url})
+            info = log.get().split('\n')[:-1][-3:]
+            return_value = {
+                'title': info[0],
+                'url': info[1],
+                'thumbnail': info[2]
+            }
+            cache.set(f'yt_{yid}_{quality_id}', f'{{"status":"ok", "data":{json.dumps(return_value)}}}', timeout=10*60)
+            return jsonify(return_value)
         except youtube_dl.utils.DownloadError as e:
             cache.set(f'yt_{yid}_{quality_id}', f'{{"status":"error", "data":{{"error": "{repr(e)[39:-3]}"}}}}')
             return jsonify({'error': repr(e)[39:-3]}), 404
