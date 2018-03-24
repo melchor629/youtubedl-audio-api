@@ -30,7 +30,6 @@ def cache_aware(kkey, **kwargs_cache):
             nonlocal kkey
             nonlocal kwargs_cache
             key = kkey.format(*args, **kwargs)
-            print(key)
             cache_val = get_in_cache(key)
             if cache_val is not None:
                 if 'error' in cache_val:
@@ -43,7 +42,7 @@ def cache_aware(kkey, **kwargs_cache):
                 save_into_cache(key, val, **kwargs_cache)
                 return jsonify(val)
             except ytdl.YoutubeDLError as error:
-                val = {'error', repr(error)}
+                val = {'error': repr(error)}
                 save_into_cache(key, val)
                 return jsonify(val), 400
         return update_wrapper(decorate, func)

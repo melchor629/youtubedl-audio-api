@@ -68,5 +68,5 @@ def get_urls(urls, quality_id):
                 }
                 results.append(return_value)
         except youtube_dl.utils.DownloadError as error:
-            return YoutubeDLError(repr(error)[39:-3], url)
+            raise YoutubeDLError(repr(error)[39:-3], url)
         return results
