@@ -30,9 +30,9 @@ def format_for_videos(urls):
                 audio_lines = [line[:-1] for line in stringio if 'audio' in line]
                 splitted = [re.compile(r'[ ,]{2,}').split(line) for line in audio_lines]
                 return_val = [{
-                    'id': l[0],
+                    'id': int(l[0]),
                     'container': l[1],
-                    'bps': l[3],
+                    'bps': int(l[3][0:-1]),
                     'size': l[-1:][0],
                     'extra': l[4]
                 } for l in splitted]
