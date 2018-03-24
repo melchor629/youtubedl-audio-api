@@ -82,7 +82,7 @@
             e.preventDefault();
             let id = getYoutubeId();
             let quality = qualitySelect.value;
-            let url = quality ? `/api/${id}?quality_id=${quality}` : `/api/${id}`;
+            let url = quality ? `/api/${id}/${quality}` : `/api/${id}`;
             setLoadingState(true);
             fetch(url)
                 .then(res => {
