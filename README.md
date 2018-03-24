@@ -33,7 +33,7 @@ Also, I have a [Heroku instance][7] running with a little example.
 
 ## RESTful API
 
-### GET /api/<youtube-id>
+### GET /api/\<youtube-id\>
 
 Gets the audio URL, the title and the thumbnail of the video in the best audio quality (usually Opus 160Kbps VBR in webm container). The url differ change between calls.
 
@@ -47,11 +47,11 @@ An example of https://yt-audio-api.herokuapp.com/api/0RLvtm0EghQ:
 }
 ```
 
-### GET /api/<youtube-id>/<quality-id>
+### GET /api/\<youtube-id\>/\<quality-id\>
 
 The same as before, but changing the audio quality to the id (see next section).
 
-### GET /api/<youtube-id>/formats
+### GET /api/\<youtube-id\>/formats
 
 Returns a list of different audio formats available in the servers to play directly. The `id` field can be used in the upper section in `<quality-id>` path field.
 
