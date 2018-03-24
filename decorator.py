@@ -22,14 +22,15 @@ def save_into_cache(key, value, **kwargs):
     global cache
     cache.set(key, json.dumps(value), **kwargs)
 
-def cache_aware(key, **kwargs_cache):
+def cache_aware(kkey, **kwargs_cache):
     """ Decorator that allows to create a JSON endpoint that stores values into the
     cache """
     def cache_aware2(func):
         def decorate(*args, **kwargs):
-            nonlocal key
+            nonlocal kkey
             nonlocal kwargs_cache
-            key = key.format(*args, **kwargs)
+            key = kkey.format(*args, **kwargs)
+            print(key)
             cache_val = get_in_cache(key)
             if cache_val is not None:
                 if 'error' in cache_val:
