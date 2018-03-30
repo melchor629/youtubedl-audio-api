@@ -12,7 +12,17 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return render_template('index.html')
+    return '''
+<html lang="en">
+<head>
+    <title>YoutubeDL Audio API</title>
+</head>
+<body>
+    <p>Want to know how it works? See <a href="https://github.com/melchor629/youtubedl-audio-api" target="_blank" rel="nofollow">the repo</a></p>
+    <p>Want an example? <a href="https://raul.ml/ytAudio/" target="_blank" rel="nofollow">See that page</a></p>
+</body>
+</html
+    '''
 
 @app.route("/api/<yid>/formats", methods=['GET'])
 @cross_origin()
