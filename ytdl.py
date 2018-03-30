@@ -34,7 +34,7 @@ def format_for_videos(urls):
                     'container': l[1],
                     'bps': int(l[3][0:-1]),
                     'size': l[-1:][0],
-                    'extra': l[4]
+                    'extra': l[-2]
                 } for l in splitted]
                 results.append(return_val)
                 log.clear()
