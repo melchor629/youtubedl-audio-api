@@ -4,8 +4,7 @@ import json
 from flask import jsonify
 from werkzeug.contrib.cache import SimpleCache
 
-import ytdl
-
+import ytdl_audio_api.ytdl as ytdl
 
 cache = SimpleCache()
 
@@ -18,32 +17,51 @@ def get_in_cache(key):
         return cache_val
     return None
 
+
 def save_into_cache(key, value, **kwargs):
     global cache
-    cache.set(key, json.dumps(value), **kwargs)
+    if 'timeout' in kwargs:
+        cache.set(key, json.dumps(value), timeout=kwargs['timeout'])
+    else:
+        cache.set(key, json.dumps(value), **kwargs)
+
 
 def cache_aware(kkey, **kwargs_cache):
     """ Decorator that allows to create a JSON endpoint that stores values into the
     cache """
+
     def cache_aware2(func):
         def decorate(*args, **kwargs):
             nonlocal kkey
             nonlocal kwargs_cache
+            for key in kwargs_cache:
+                if callable(kwargs_cache[key]):
+                    kwargs[key] = kwargs_cache[key]()
+                else:
+                    kwargs[key] = kwargs_cache[key]
             key = kkey.format(*args, **kwargs)
             cache_val = get_in_cache(key)
             if cache_val is not None:
                 if 'error' in cache_val:
-                    return jsonify(cache_val), 404
+                    return as_json(cache_val), 404
                 else:
-                    return jsonify(cache_val)
+                    return as_json(cache_val)
 
             try:
                 val = func(*args, **kwargs)
                 save_into_cache(key, val, **kwargs_cache)
-                return jsonify(val)
+                return as_json(val)
             except ytdl.YoutubeDLError as error:
                 val = {'error': repr(error)}
                 save_into_cache(key, val)
-                return jsonify(val), 400
+                return as_json(val), 400
+
         return update_wrapper(decorate, func)
+
     return cache_aware2
+
+
+def as_json(obj):
+    response = jsonify(obj)
+    response.obj = obj
+    return response

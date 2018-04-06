@@ -4,7 +4,7 @@ Utilities to get information from Youtube-DL
 import io
 import re
 import youtube_dl
-from logger import InMemoryLogger
+from .logger import InMemoryLogger
 
 
 class YoutubeDLError(Exception):
@@ -43,7 +43,7 @@ def format_for_videos(urls):
         return results
 
 
-def get_urls(urls, quality_id):
+def get_urls(urls, quality_id='bestaudio/best'):
     """ Get a list direct audio URL for every video URL, with some extra info """
     log = InMemoryLogger()
     ydl_opts = {

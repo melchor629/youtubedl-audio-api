@@ -1,1 +1,1 @@
-web: python ./app.py
+web: python -m gunicorn -c gunicorn.conf ytdl_audio_api.wsgi
