@@ -1,5 +1,7 @@
 flask
 flask-cors
+flask-cache
+redis
 youtube-dl
 gunicorn
 gunicorn[gevent]

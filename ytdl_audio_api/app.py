@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, request, Response
+from flask_cache import Cache
 from flask_cors import cross_origin
 
 import ytdl_audio_api.ytdl as ytdl
@@ -8,6 +9,17 @@ from .decorator import cache_aware
 from .http_pipe import pipe, pipe_headers
 
 app = Flask(__name__)
+
+if 'REDIS_URL' in os.environ:
+    print('Using redis cache')
+    cache = Cache(app, config={'CACHE_TYPE': 'redis', 'CACHE_REDIS_URL': os.environ['REDIS_URL']},
+                  with_jinja2_ext=False)
+elif 'REDIS' in os.environ:
+    print('Using redis cache')
+    cache = Cache(app, config={'CACHE_TYPE': 'redis', 'CACHE_REDIS_URL': os.environ['REDIS']}, with_jinja2_ext=False)
+else:
+    print('Using in-memory cache')
+    cache = Cache(app, config={'CACHE_TYPE': 'simple'}, with_jinja2_ext=False)
 
 
 @app.route("/")
@@ -33,21 +45,21 @@ def hello():
 
 @app.route("/api/<yid>/formats", methods=['GET'])
 @cross_origin()
-@cache_aware('yt_{yid}_formats')
+@cache_aware(cache, 'yt_{yid}_formats')
 def formats(yid, **kwargs):
     return ytdl.format_for_videos([f'https://www.youtube.com/watch?v={yid}'])[0]
 
 
 @app.route("/api/<yid>", methods=['GET'])
 @cross_origin()
-@cache_aware('yt_{yid}_bestaudio', timeout=10 * 60)
+@cache_aware(cache, 'yt_{yid}_bestaudio', timeout=10 * 60)
 def get_url_default_quality(yid, **kwargs):
     return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'])[0]
 
 
 @app.route("/api/<yid>/<quality_id>", methods=['GET'])
 @cross_origin()
-@cache_aware('yt_{yid}_{quality_id}', timeout=10 * 60)
+@cache_aware(cache, 'yt_{yid}_{quality_id}', timeout=10 * 60)
 def get_url(yid, quality_id, **kwargs):
     return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id)[0]
 

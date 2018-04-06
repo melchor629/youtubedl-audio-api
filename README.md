@@ -117,6 +117,10 @@ docker container run -d --rm -p 5000:5000 yt-audio-api
 curl http://localhost:5000/api/0RLvtm0EghQ
 ```
 
+## Cache
+Some request can be cached using Redis. The only thing you must do to use Redis is setting the environment
+variable `REDIS` (o `REDIS_URL` useful for Heroku) with the url of the server.
+
   [1]: https://rg3.github.io/youtube-dl/
   [2]: http://flask.pocoo.org
   [3]: https://docker.com
