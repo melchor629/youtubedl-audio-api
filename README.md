@@ -35,9 +35,9 @@ You can deploy the app to [Heroku][4] or into a [Docker][3] environment.
 
 ## Example
 
-[@RaulWhite][5] did [a simple page][6] for that.
+We did [a demo page][5] for that.
 
-Also, I have a [Heroku instance][7] running with a little example.
+Also, I have a [Heroku instance][6] running with a little example.
 
 ## RESTful API
 
@@ -125,6 +125,5 @@ variable `REDIS` (o `REDIS_URL` useful for Heroku) with the url of the server.
   [2]: http://flask.pocoo.org
   [3]: https://docker.com
   [4]: https://heroku.com
-  [5]: https://github.com/RaulWhite
-  [6]: https://github.com/RaulWhite/youtubeAudio
-  [7]: https://yt-audio-api.herokuapp.com/
+  [5]: https://github.com/MajorcaDevs/youtubeAudio
+  [6]: https://yt-audio-api.herokuapp.com/
