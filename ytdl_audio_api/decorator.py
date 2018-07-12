@@ -1,7 +1,7 @@
 """ Decorator for cache-aware endpoints """
 from functools import update_wrapper
 import json
-from flask import jsonify
+from flask import jsonify, request
 
 import ytdl_audio_api.ytdl as ytdl
 
@@ -60,3 +60,13 @@ def as_json(obj):
     response = jsonify(obj)
     response.obj = obj
     return response
+
+
+def log_request(logger):
+    def ahiva(func):
+        def le_dec(*args, **kwargs):
+            logger.info(f'[{request.remote_addr}] {request.method} {request.url}')
+            return func(*args, **kwargs)
+        return update_wrapper(le_dec, func)
+
+    return ahiva

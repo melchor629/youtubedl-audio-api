@@ -2,9 +2,13 @@
 Utilities to get information from Youtube-DL
 """
 import io
+import logging
 import re
 import youtube_dl
 from .logger import InMemoryLogger
+
+
+logger = logging.getLogger(__name__)
 
 
 class YoutubeDLError(Exception):
@@ -38,7 +42,9 @@ def format_for_videos(urls):
                 } for l in splitted]
                 results.append(return_val)
                 log.clear()
+                logger.debug('[format_for_videos] Output for %s:\n%s', url, repr(return_val))
         except youtube_dl.utils.DownloadError as error:
+            logger.warning('[format_for_videos] Error for %s: %s', url, repr(error)[39:-3])
             raise YoutubeDLError(repr(error)[39:-3], url)
         return results
 
@@ -67,6 +73,8 @@ def get_urls(urls, quality_id='bestaudio/best'):
                     'thumbnail': info[2]
                 }
                 results.append(return_value)
+                logger.debug('[get_urls] Output for %s@%s:\n%s', url, quality_id, repr(return_value))
         except youtube_dl.utils.DownloadError as error:
+            logger.warning('[format_for_videos] Error for %s@%s: %s', url, quality_id, repr(error)[39:-3])
             raise YoutubeDLError(repr(error)[39:-3], url)
         return results
