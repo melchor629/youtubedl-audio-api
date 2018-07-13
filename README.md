@@ -22,7 +22,7 @@ pip3 install -r requirements.txt
 You can use the Docker image to use it in development. (see Docker section) This command should do the trick:
 
 ```bash
-docker container run --rm -it -p 5000:5000 -v "$PWD":/opt/yt-audio-api ytdl-audio-api
+docker container run --rm -it -p 5000:5000 melchor9000/youtubedl-audio-api
 ```
 
 ## Using the web
@@ -113,13 +113,18 @@ An example of building the image, running and testing:
 
 ```bash
 docker image build -t yt-audio-api .
-docker container run -d --rm -p 5000:5000 yt-audio-api
+docker container run -d --rm -p 5000:5000 yt-audio-api # or melchor9000/youtubedl-audio-api from Docker Hub
 curl http://localhost:5000/api/0RLvtm0EghQ
 ```
 
+It is available a `docker-compose.yaml` file to test it out. Uses the image from Docker Hub and a redis server for caching.
+
 ## Cache
 Some request can be cached using Redis. The only thing you must do to use Redis is setting the environment
-variable `REDIS` (o `REDIS_URL` useful for Heroku) with the url of the server.
+variable `REDIS` (or `REDIS_URL` useful for Heroku) with the url of the server.
+
+## Logging
+The server has logging for some points of functions. To modify the logging level, set `LOGGING_LEVEL` environment variable to the value you want. Valid values are `CRITICAL`, `FATAL`, `ERROR`, `WARNING`, `WARN`, `INFO`, `DEBUG` or `NOTSET`, see [logging][7] from Python.
 
   [1]: https://rg3.github.io/youtube-dl/
   [2]: http://flask.pocoo.org
@@ -127,3 +132,4 @@ variable `REDIS` (o `REDIS_URL` useful for Heroku) with the url of the server.
   [4]: https://heroku.com
   [5]: https://github.com/MajorcaDevs/youtubeAudio
   [6]: https://yt-audio-api.herokuapp.com/
+  [7]: https://docs.python.org/3/library/logging.html#logging-levels

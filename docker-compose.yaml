@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  ytdl-audio-api:
+    image: melchor9000/youtubedl-audio-api
+    ports:
+      - "5000:5000"
+    environment:
+      REDIS: "redis://cache:6379/1"
+      LOGGING_LEVEL: "DEBUG" #Change the logging level, use values from python logging package
+    volumes: [ ".:/opt/yt-audio-api" ] #Use it while programming
+    depends_on:
+      - cache
+
+  cache:
+    image: redis
+    expose:
+      - "6379"

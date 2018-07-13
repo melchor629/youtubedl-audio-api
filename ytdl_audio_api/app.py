@@ -1,4 +1,4 @@
-from logging import getLogger, basicConfig
+import logging
 import os
 
 from flask import Flask, request, Response
@@ -10,15 +10,15 @@ from .decorator import cache_aware, log_request
 from .http_pipe import pipe, pipe_headers
 
 app = Flask(__name__)
-basicConfig(level=10)
-logger = getLogger(__name__)
+logging.basicConfig(level=logging.getLevelName(os.environ.get('LOGGING_LEVEL', 'WARN')))
+logger = logging.getLogger(__name__)
 
 if 'REDIS_URL' in os.environ:
-    logger.info('Using redis cache')
+    logger.info('Using redis cache "%s"', os.environ['REDIS'])
     cache = Cache(app, config={'CACHE_TYPE': 'redis', 'CACHE_REDIS_URL': os.environ['REDIS_URL']},
                   with_jinja2_ext=False)
 elif 'REDIS' in os.environ:
-    logger.info('Using redis cache')
+    logger.info('Using redis cache "%s"', os.environ['REDIS'])
     cache = Cache(app, config={'CACHE_TYPE': 'redis', 'CACHE_REDIS_URL': os.environ['REDIS']}, with_jinja2_ext=False)
 else:
     logger.info('Using in-memory cache')

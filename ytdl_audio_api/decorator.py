@@ -1,5 +1,6 @@
 """ Decorator for cache-aware endpoints """
 from functools import update_wrapper
+import logging
 import json
 from flask import jsonify, request
 
@@ -37,6 +38,7 @@ def cache_aware(cache, kkey, **kwargs_cache):
             key = kkey.format(*args, **kwargs)
             cache_val = get_in_cache(cache, key)
             if cache_val is not None:
+                logging.getLogger(__name__).debug('Found response in cache: %s -> %s', key, repr(cache_val))
                 if 'error' in cache_val:
                     return as_json(cache_val), 404
                 else:
@@ -45,10 +47,12 @@ def cache_aware(cache, kkey, **kwargs_cache):
             try:
                 val = func(*args, **kwargs)
                 save_into_cache(cache, key, val, **kwargs_cache)
+                logging.getLogger(__name__).debug('Saving response into cache: %s -> %s', key, repr(val))
                 return as_json(val)
             except ytdl.YoutubeDLError as error:
                 val = {'error': repr(error)}
                 save_into_cache(cache, key, val)
+                logging.getLogger(__name__).debug('Saving error response into cache: %s -> %s', key, repr(val))
                 return as_json(val), 400
 
         return update_wrapper(decorate, func)
