@@ -2,7 +2,8 @@
 from functools import update_wrapper
 import logging
 import json
-from flask import jsonify, request
+import socket
+from flask import jsonify, request, Response
 
 import ytdl_audio_api.ytdl as ytdl
 
@@ -66,11 +67,16 @@ def as_json(obj):
     return response
 
 
+HOSTNAME = socket.gethostname()
+
+
 def log_request(logger):
     def ahiva(func):
         def le_dec(*args, **kwargs):
-            logger.info(f'[{request.remote_addr}] {request.method} {request.url}')
-            return func(*args, **kwargs)
+            logger.info(f'{HOSTNAME} -> [{request.remote_addr}] {request.method} {request.url}')
+            resp = func(*args, **kwargs)  # type: Response
+            resp.headers.add_header('X-Served-By', HOSTNAME)
+            return resp
         return update_wrapper(le_dec, func)
 
     return ahiva

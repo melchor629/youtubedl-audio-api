@@ -1,7 +1,7 @@
 import logging
 import os
 
-from flask import Flask, request, Response
+from flask import Flask, request, Response, make_response
 from flask_cache import Cache
 from flask_cors import cross_origin
 
@@ -28,7 +28,7 @@ else:
 @app.route("/")
 @log_request(logger)
 def hello():
-    return '''
+    res = make_response('''
 <html lang="en">
 <head>
     <title>YoutubeDL Audio API</title>
@@ -44,9 +44,12 @@ def hello():
     </p>
 </body>
 </html
-    '''
+    ''')  # type: Response
+    res.headers.add_header('Cache-Control', 'private, max-age=86400')
+    return res
 
 
+@app.route("/api/<yid>/formats/", methods=['GET'])
 @app.route("/api/<yid>/formats", methods=['GET'])
 @log_request(logger)
 @cross_origin()
@@ -55,6 +58,7 @@ def formats(yid, **kwargs):
     return ytdl.format_for_videos([f'https://www.youtube.com/watch?v={yid}'])[0]
 
 
+@app.route("/api/<yid>/", methods=['GET'])
 @app.route("/api/<yid>", methods=['GET'])
 @log_request(logger)
 @cross_origin()
@@ -64,6 +68,7 @@ def get_url_default_quality(yid, **kwargs):
     return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'])[0]
 
 
+@app.route("/api/<yid>/<quality_id>/", methods=['GET'])
 @app.route("/api/<yid>/<quality_id>", methods=['GET'])
 @log_request(logger)
 @cross_origin()
@@ -72,6 +77,7 @@ def get_url(yid, quality_id, **kwargs):
     return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id)[0]
 
 
+@app.route("/api/<yid>/<quality_id>/passthrough/", methods=["HEAD"])
 @app.route("/api/<yid>/<quality_id>/passthrough", methods=["HEAD"])
 @log_request(logger)
 @cross_origin()
@@ -87,6 +93,7 @@ def passthrough_head(yid, quality_id, **kwargs):
         return Response(headers=resp.headers)
 
 
+@app.route("/api/<yid>/<quality_id>/passthrough/", methods=["GET"])
 @app.route("/api/<yid>/<quality_id>/passthrough", methods=["GET"])
 @log_request(logger)
 @cross_origin()

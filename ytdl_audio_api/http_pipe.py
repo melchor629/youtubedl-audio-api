@@ -1,4 +1,4 @@
-import urllib
+from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
 from werkzeug.datastructures import Headers
@@ -8,9 +8,9 @@ def pipe(request, url):
     headers = {}
     if request.headers.get('Range'):
         headers['Range'] = request.headers.get('Range')
-    request = urllib.request.Request(url, headers=headers)
+    request = Request(url, headers=headers)
     try:
-        client = urllib.request.urlopen(request)
+        client = urlopen(request)
 
         def stream():
             continue_reading = True
@@ -36,9 +36,9 @@ def pipe_headers(request, url):
     headers = {}
     if request.headers.get('Range'):
         headers['Range'] = request.headers.get('Range')
-    request = urllib.request.Request(url, headers=headers, method="HEAD")
+    request = Request(url, headers=headers, method="HEAD")
     try:
-        client = urllib.request.urlopen(request)
+        client = urlopen(request)
         client.read()
         headers = Headers()
         headers.add('Content-Type', client.getheader('Content-Type'))
