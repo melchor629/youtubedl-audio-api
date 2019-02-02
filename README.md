@@ -37,7 +37,7 @@ You can deploy the app to [Heroku][4] or into a [Docker][3] environment.
 
 We did [a demo page][5] for that.
 
-Also, I have a [Heroku instance][6] running with a little example.
+Also, I have an [instance][6] running with a little example.
 
 ## RESTful API
 
@@ -131,5 +131,5 @@ The server has logging for some points of functions. To modify the logging level
   [3]: https://docker.com
   [4]: https://heroku.com
   [5]: https://github.com/MajorcaDevs/youtubeAudio
-  [6]: https://yt-audio-api.herokuapp.com/
+  [6]: https://ytdl-audio-api.majorcadevs.com
   [7]: https://docs.python.org/3/library/logging.html#logging-levels
