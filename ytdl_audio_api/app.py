@@ -49,6 +49,13 @@ def hello():
     return res
 
 
+@app.route("/api/health")
+@log_request(logger)
+@cross_origin()
+def health(**kwargs):
+    return 'OK'
+
+
 @app.route("/api/<yid>/formats/", methods=['GET'])
 @app.route("/api/<yid>/formats", methods=['GET'])
 @log_request(logger)
