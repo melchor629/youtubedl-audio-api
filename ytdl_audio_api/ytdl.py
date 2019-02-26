@@ -16,12 +16,13 @@ class YoutubeDLError(Exception):
     pass
 
 
-def format_for_videos(urls):
+def format_for_videos(urls, **kwargs):
     """ Get a list of formats for every video URL """
     log = InMemoryLogger()
     ydl_opts = {
         'listformats': True,
-        'logger': log
+        'logger': log,
+        **kwargs,
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -49,7 +50,7 @@ def format_for_videos(urls):
         return results
 
 
-def get_urls(urls, quality_id='bestaudio/best'):
+def get_urls(urls, quality_id='bestaudio/best', **kwargs):
     """ Get a list direct audio URL for every video URL, with some extra info """
     log = InMemoryLogger()
     ydl_opts = {
@@ -58,7 +59,8 @@ def get_urls(urls, quality_id='bestaudio/best'):
         'forceurl': True,
         'forcetitle': True,
         'forcethumbnail': True,
-        'simulate': True
+        'simulate': True,
+        **kwargs,
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:

@@ -126,6 +126,12 @@ variable `REDIS` (or `REDIS_URL` useful for Heroku) with the url of the server.
 ## Logging
 The server has logging for some points of functions. To modify the logging level, set `LOGGING_LEVEL` environment variable to the value you want. Valid values are `CRITICAL`, `FATAL`, `ERROR`, `WARNING`, `WARN`, `INFO`, `DEBUG` or `NOTSET`, see [logging][7] from Python.
 
+## Proxy
+
+You can set a proxy with the environment variable `PROXY`. Supported proxy protocols are http, https and socks5.
+
+If you want to use a proxy as a fallback, use `FALLBACK_PROXY`. This will be used if any call to the YT API fails.
+
   [1]: https://rg3.github.io/youtube-dl/
   [2]: http://flask.pocoo.org
   [3]: https://docker.com

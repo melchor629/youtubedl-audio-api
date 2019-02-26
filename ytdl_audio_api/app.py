@@ -24,6 +24,9 @@ else:
     logger.info('Using in-memory cache')
     cache = Cache(app, config={'CACHE_TYPE': 'simple'}, with_jinja2_ext=False)
 
+PROXY = os.environ.get('PROXY')
+FALLBACK_PROXY = os.environ.get('FALLBACK_PROXY')
+
 
 @app.route("/")
 @log_request(logger)
@@ -40,7 +43,7 @@ def hello():
     </p>
     <p>
         Want an example?
-        <a href="http://majorcadevs.github.io/youtubeAudio/" target="_blank" rel="nofollow">See that page</a>
+        <a href="https://yta.majorcadevs.com/" target="_blank" rel="nofollow">See that page</a>
     </p>
 </body>
 </html
@@ -62,7 +65,12 @@ def health(**kwargs):
 @cross_origin()
 @cache_aware(cache, 'yt_{yid}_formats')
 def formats(yid, **kwargs):
-    return ytdl.format_for_videos([f'https://www.youtube.com/watch?v={yid}'])[0]
+    try:
+        return ytdl.format_for_videos([f'https://www.youtube.com/watch?v={yid}'], proxy=PROXY)[0]
+    except ytdl.YoutubeDLError as e:
+        if FALLBACK_PROXY is None or FALLBACK_PROXY == '':
+            raise e
+        return ytdl.format_for_videos([f'https://www.youtube.com/watch?v={yid}'], proxy=FALLBACK_PROXY)[0]
 
 
 @app.route("/api/<yid>/", methods=['GET'])
@@ -72,7 +80,12 @@ def formats(yid, **kwargs):
 @cache_aware(cache, 'yt_{yid}_bestaudio', timeout=10 * 60)
 def get_url_default_quality(yid, **kwargs):
     logger.info(f'/api/{yid}')
-    return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'])[0]
+    try:
+        return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], proxy=PROXY)[0]
+    except ytdl.YoutubeDLError as e:
+        if FALLBACK_PROXY is None or FALLBACK_PROXY == '':
+            raise e
+        return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], proxy=FALLBACK_PROXY)[0]
 
 
 @app.route("/api/<yid>/<quality_id>/", methods=['GET'])
@@ -81,7 +94,12 @@ def get_url_default_quality(yid, **kwargs):
 @cross_origin()
 @cache_aware(cache, 'yt_{yid}_{quality_id}', timeout=10 * 60)
 def get_url(yid, quality_id, **kwargs):
-    return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id)[0]
+    try:
+        return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id, proxy=PROXY)[0]
+    except ytdl.YoutubeDLError as e:
+        if FALLBACK_PROXY is None or FALLBACK_PROXY == '':
+            raise e
+        return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id, proxy=FALLBACK_PROXY)[0]
 
 
 @app.route("/api/<yid>/<quality_id>/passthrough/", methods=["HEAD"])
