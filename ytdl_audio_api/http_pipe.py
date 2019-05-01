@@ -4,11 +4,14 @@ from urllib.error import HTTPError
 from werkzeug.datastructures import Headers
 
 
-def pipe(request, url):
+def pipe(request, url, proxy):
     headers = {}
     if request.headers.get('Range'):
         headers['Range'] = request.headers.get('Range')
     request = Request(url, headers=headers)
+    if proxy is not None:
+        request.set_proxy(proxy, 'http')
+        request.set_proxy(proxy, 'https')
     try:
         client = urlopen(request)
 
@@ -32,11 +35,14 @@ def pipe(request, url):
         return None, None
 
 
-def pipe_headers(request, url):
+def pipe_headers(request, url, proxy):
     headers = {}
     if request.headers.get('Range'):
         headers['Range'] = request.headers.get('Range')
     request = Request(url, headers=headers, method="HEAD")
+    if proxy is not None:
+        request.set_proxy(proxy, 'http')
+        request.set_proxy(proxy, 'https')
     try:
         client = urlopen(request)
         client.read()

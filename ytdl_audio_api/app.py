@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import logging
 import os
 
@@ -109,11 +110,11 @@ def get_url(yid, quality_id, **kwargs):
 def passthrough_head(yid, quality_id, **kwargs):
     resp = get_url(yid=yid, quality_id=quality_id)
     if resp.status_code == 200:
-        headers = pipe_headers(request, resp.obj['url'])
-        if headers is not None:
-            return Response(headers=headers)
-        else:
-            return 'Cannot obtain audio', 404
+        for proxy_url in list(OrderedDict.fromkeys([ None, PROXY, FALLBACK_PROXY ])):
+            headers = pipe_headers(request, resp.obj['url'], proxy_url)
+            if headers is not None:
+                return Response(headers=headers)
+        return 'Cannot obtain audio', 404
     else:
         return Response(headers=resp.headers)
 
@@ -125,11 +126,11 @@ def passthrough_head(yid, quality_id, **kwargs):
 def passthrough(yid, quality_id, **kwargs):
     resp = get_url(yid=yid, quality_id=quality_id)
     if resp.status_code == 200:
-        stream, headers = pipe(request, resp.obj['url'])
-        if stream is not None:
-            return Response(stream, headers=headers)
-        else:
-            return 'Cannot obtain audio', 404
+        for proxy_url in list(OrderedDict.fromkeys([ None, PROXY, FALLBACK_PROXY ])):
+            stream, headers = pipe(request, resp.obj['url'], proxy_url)
+            if stream is not None:
+                return Response(stream, headers=headers)
+        return 'Cannot obtain audio', 404
     else:
         return resp
 
