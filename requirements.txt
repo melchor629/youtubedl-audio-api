@@ -6,3 +6,5 @@ youtube-dl
 gunicorn
 gunicorn[gevent]
 gevent>=0.13
+requests
+pysocks

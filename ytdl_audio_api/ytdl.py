@@ -25,6 +25,8 @@ def format_for_videos(urls, **kwargs):
         **kwargs,
     }
 
+    joined_kwargs = ', '.join([ f'{k}: {kwargs[k]}' for k in kwargs.keys() ])
+    logger.debug(f'format_for_videos: {", ".join(urls)} - {joined_kwargs}')
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         results = []
         try:
@@ -45,8 +47,8 @@ def format_for_videos(urls, **kwargs):
                 log.clear()
                 logger.debug('[format_for_videos] Output for %s:\n%s', url, repr(return_val))
         except youtube_dl.utils.DownloadError as error:
-            logger.warning('[format_for_videos] Error for %s: %s', url, repr(error)[39:-3])
-            raise YoutubeDLError(repr(error)[39:-3], url)
+            logger.warning('[format_for_videos] Error for %s: %s', url, repr(error))
+            raise YoutubeDLError(repr(error), url)
         return results
 
 
@@ -63,6 +65,8 @@ def get_urls(urls, quality_id='bestaudio/best', **kwargs):
         **kwargs,
     }
 
+    joined_kwargs = ', '.join([ f'{k}: {kwargs[k]}' for k in kwargs.keys() ])
+    logger.debug(f'get_urls: {", ".join(urls)} - {quality_id} - {joined_kwargs}')
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         results = []
         try:
@@ -77,6 +81,6 @@ def get_urls(urls, quality_id='bestaudio/best', **kwargs):
                 results.append(return_value)
                 logger.debug('[get_urls] Output for %s@%s:\n%s', url, quality_id, repr(return_value))
         except youtube_dl.utils.DownloadError as error:
-            logger.warning('[format_for_videos] Error for %s@%s: %s', url, quality_id, repr(error)[39:-3])
-            raise YoutubeDLError(repr(error)[39:-3], url)
+            logger.warning('[format_for_videos] Error for %s@%s: %s', url, quality_id, repr(error)[:-3])
+            raise YoutubeDLError(repr(error)[:-3], url)
         return results
