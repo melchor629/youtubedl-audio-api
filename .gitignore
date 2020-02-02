@@ -3,3 +3,5 @@
 
 .vscode/
 .idea
+.venv/
+venv/

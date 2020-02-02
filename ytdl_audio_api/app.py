@@ -44,7 +44,7 @@ def hello():
     </p>
     <p>
         Want an example?
-        <a href="https://yta.majorcadevs.com/" target="_blank" rel="nofollow">See that page</a>
+        <a href="https://youtubeaudio.majorcadevs.com" target="_blank" rel="nofollow">See that page</a>
     </p>
 </body>
 </html
