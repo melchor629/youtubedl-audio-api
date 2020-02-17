@@ -8,3 +8,4 @@ gunicorn[gevent]
 gevent>=0.13
 requests
 pysocks
+Werkzeug<1
