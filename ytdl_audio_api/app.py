@@ -3,7 +3,7 @@ import logging
 import os
 
 from flask import Flask, request, Response, make_response
-from flask_cache import Cache
+from flask_caching import Cache
 from flask_cors import cross_origin
 
 import ytdl_audio_api.ytdl as ytdl
@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.getLevelName(os.environ.get('LOGGING_LEVEL', '
 logger = logging.getLogger(__name__)
 
 if 'REDIS_URL' in os.environ:
-    logger.info('Using redis cache "%s"', os.environ['REDIS'])
+    logger.info('Using redis cache "%s"', os.environ['REDIS_URL'])
     cache = Cache(app, config={'CACHE_TYPE': 'redis', 'CACHE_REDIS_URL': os.environ['REDIS_URL']},
                   with_jinja2_ext=False)
 elif 'REDIS' in os.environ:
