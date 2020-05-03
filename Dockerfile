@@ -1,7 +1,7 @@
 FROM python:3
 
 RUN mkdir -p /opt/yt-audio-api/ytdl_audio_api
-COPY requirements.txt gunicorn.py /opt/yt-audio-api/
+COPY requirements.txt gunicorn_config.py /opt/yt-audio-api/
 RUN pip install --no-cache-dir -r /opt/yt-audio-api/requirements.txt
 COPY ytdl_audio_api /opt/yt-audio-api/ytdl_audio_api
 
