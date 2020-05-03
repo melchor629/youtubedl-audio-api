@@ -9,4 +9,4 @@ ENV PORT 5000
 EXPOSE 5000
 
 WORKDIR /opt/yt-audio-api/
-CMD [ "gunicorn", "-c", "gunicorn.conf", "ytdl_audio_api.wsgi" ]
+CMD [ "gunicorn", "-c", "gunicorn.py", "ytdl_audio_api.wsgi" ]
