@@ -33,6 +33,10 @@ The app can be scalated using `gunicorn -c gunicorn.py ytdl_audio_api.wsgi`. Is 
 
 You can deploy the app to [Heroku][4] or into a [Docker][3] environment.
 
+> **Note**: by default it will use `2 * Cores + 1` workers. You can change this using the `WORKERS`
+> environment variable. In Heroku this is mandatory, so add a "Config Var" called `WORKERS` and put
+> a value of 1 or 2 (if using the free dyno).
+
 ## Example
 
 We did [a demo page][5] for that.
