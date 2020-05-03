@@ -29,7 +29,7 @@ docker container run --rm -it -p 5000:5000 melchor9000/youtubedl-audio-api
 
 By default, running the app with `python app.py` will run on http://localhost:5000 . If you set the environment variable `PORT` to some port, it will listen for everyone at the specified port.
 
-The app can be scalated using `gunicorn -c gunicorn.conf ytdl_audio_api.wsgi`. Is configured to use `gevent` for asynchronous serving.
+The app can be scalated using `gunicorn -c gunicorn.py ytdl_audio_api.wsgi`. Is configured to use `gevent` for asynchronous serving.
 
 You can deploy the app to [Heroku][4] or into a [Docker][3] environment.
 
@@ -45,7 +45,7 @@ Also, I have an [instance][6] running with a little example.
 
 Gets the audio URL, the title and the thumbnail of the video in the best audio quality (usually Opus 160Kbps VBR in webm container). The url differ change between calls.
 
-An example of https://yt-audio-api.herokuapp.com/api/0RLvtm0EghQ:
+An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ>:
 
 ```json
 {
@@ -63,7 +63,7 @@ The same as before, but changing the audio quality to the id (see next section).
 
 Returns a list of different audio formats available in the servers to play directly. The `id` field can be used in the upper section in `<quality-id>` path field.
 
-An example of https://yt-audio-api.herokuapp.com/api/0RLvtm0EghQ/formats:
+An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/formats>:
 
 ```json
 [
@@ -137,5 +137,5 @@ If you want to use a proxy as a fallback, use `FALLBACK_PROXY`. This will be use
   [3]: https://docker.com
   [4]: https://heroku.com
   [5]: https://github.com/MajorcaDevs/youtubeAudio
-  [6]: https://ytdl-audio-api.majorcadevs.com
+  [6]: https://youtubeaudio.majorcadevs.com/api/
   [7]: https://docs.python.org/3/library/logging.html#logging-levels
