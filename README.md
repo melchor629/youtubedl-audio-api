@@ -1,6 +1,6 @@
 # YouTube-DL Audio API
 
-An pythonic RESTful API for getting URL of YouTube videos with only audio, perfect for playing in background reducing the network bandwith. Uses [youtube-dl][1] for the queries, and [Flask][2] for the web microframework.
+An pythonic RESTful API for getting URL of YouTube videos with only audio or video+audio, perfect for playing in background reducing the network bandwith. Uses [youtube-dl][1] for the queries, and [Flask][2] for the web microframework.
 
 ## Requirements
 
@@ -47,7 +47,7 @@ Also, I have an [instance][6] running with a little example.
 
 ### GET /api/\<youtube-id\>
 
-Gets the audio URL, the title and the thumbnail of the video in the best audio quality (usually Opus 160Kbps VBR in webm container). The url differ change between calls.
+Gets the video and audio URLs, the title and the thumbnail of the video in the best video/audio quality. The urls differ change between calls. The first URL corresponds to the video, and the second one to the audio.
 
 An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ>:
 
@@ -55,13 +55,45 @@ An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ>:
 {
   "thumbnail": "https://i.ytimg.com/vi/0RLvtm0EghQ/hqdefault.jpg",
   "title": "Floating Points - Kuiper (Live on KEXP)",
-  "url": "https://..."
+  "urls": [
+    "https://...",
+    "https://..."
+  ]
 }
 ```
 
 ### GET /api/\<youtube-id\>/\<quality-id\>
 
-The same as before, but changing the audio quality to the id (see next section).
+The same as before, but selecting only a video or audio quality through the id selected. The response will only contain one URL (for the selected quality).
+
+An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/140>
+
+```json
+{
+  "thumbnail": "https://i.ytimg.com/vi/0RLvtm0EghQ/hqdefault.jpg",
+  "title": "Floating Points - Kuiper (Live on KEXP)",
+  "urls": [
+    "https://..."
+  ]
+}
+```
+
+### GET /api/\<youtube-id\>/\<quality-id1\>,\<quality-id2\>
+
+The same as before, but changing the video and audio quality to the selected ids. The response will contain two URLs: first corresponding to the `<quality-id1>` and the second one corresponding to `<quality-id2>`. The idea is to put a video and audio qualities, but nothing prevents you to put two videos or two audio qualities.
+
+An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/140,137>
+
+```json
+{
+  "thumbnail": "https://i.ytimg.com/vi/0RLvtm0EghQ/hqdefault.jpg",
+  "title": "Floating Points - Kuiper (Live on KEXP)",
+  "urls": [
+    "https://...",
+    "https://..."
+  ]
+}
+```
 
 ### GET /api/\<youtube-id\>/formats
 
@@ -70,43 +102,172 @@ Returns a list of different audio formats available in the servers to play direc
 An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/formats>:
 
 ```json
-[
-  {
-    "bps": 63,
-    "container": "webm",
-    "extra": "opus @ 50k",
-    "id": 249,
-    "size": "6.04MiB"
-  },
-  {
-    "bps": 88,
-    "container": "webm",
-    "extra": "opus @ 70k",
-    "id": 250,
-    "size": "7.90MiB"
-  },
-  {
-    "bps": 129,
-    "container": "m4a",
-    "extra": "m4a_dash container",
-    "id": 140,
-    "size": "15.04MiB"
-  },
-  {
-    "bps": 136,
-    "container": "webm",
-    "extra": "vorbis@128k",
-    "id": 171,
-    "size": "13.23MiB"
-  },
-  {
-    "bps": 166,
-    "container": "webm",
-    "extra": "opus @160k",
-    "id": 251,
-    "size": "15.33MiB"
-  }
-]
+{
+  "audio": [
+    {
+      "bps": 69,
+      "container": "webm",
+      "extra": "opus @ 50k (48000Hz)",
+      "id": 249,
+      "size": "6.05MiB"
+    },
+    {
+      "bps": 84,
+      "container": "webm",
+      "extra": "opus @ 70k (48000Hz)",
+      "id": 250,
+      "size": "7.89MiB"
+    },
+    {
+      "bps": 129,
+      "container": "m4a",
+      "extra": "mp4a.40.2@128k (44100Hz)",
+      "id": 140,
+      "size": "15.04MiB"
+    },
+    {
+      "bps": 157,
+      "container": "webm",
+      "extra": "opus @160k (48000Hz)",
+      "id": 251,
+      "size": "15.34MiB"
+    }
+  ],
+  "video": [
+    {
+      "bps": 99,
+      "codec": "vp9",
+      "container": "webm",
+      "extra": "only",
+      "fps": 24,
+      "id": 278,
+      "resolution": "256x144",
+      "resolutionName": "144p",
+      "size": "10.64MiB"
+    },
+    {
+      "bps": 111,
+      "codec": "avc1.4d400c",
+      "container": "mp4",
+      "extra": "only",
+      "fps": 24,
+      "id": 160,
+      "resolution": "256x144",
+      "resolutionName": "144p",
+      "size": "7.48MiB"
+    },
+    {
+      "bps": 230,
+      "codec": "vp9",
+      "container": "webm",
+      "extra": "only",
+      "fps": 24,
+      "id": 242,
+      "resolution": "426x240",
+      "resolutionName": "240p",
+      "size": "19.75MiB"
+    },
+    {
+      "bps": 244,
+      "codec": "avc1.4d4015",
+      "container": "mp4",
+      "extra": "only",
+      "fps": 24,
+      "id": 133,
+      "resolution": "426x240",
+      "resolutionName": "240p",
+      "size": "13.87MiB"
+    },
+    {
+      "bps": 430,
+      "codec": "vp9",
+      "container": "webm",
+      "extra": "only",
+      "fps": 24,
+      "id": 243,
+      "resolution": "640x360",
+      "resolutionName": "360p",
+      "size": "35.49MiB"
+    },
+    {
+      "bps": 633,
+      "codec": "avc1.4d401e",
+      "container": "mp4",
+      "extra": "only",
+      "fps": 24,
+      "id": 134,
+      "resolution": "640x360",
+      "resolutionName": "360p",
+      "size": "33.68MiB"
+    },
+    {
+      "bps": 760,
+      "codec": "vp9",
+      "container": "webm",
+      "extra": "only",
+      "fps": 24,
+      "id": 244,
+      "resolution": "854x480",
+      "resolutionName": "480p",
+      "size": "59.08MiB"
+    },
+    {
+      "bps": 1159,
+      "codec": "avc1.4d401e",
+      "container": "mp4",
+      "extra": "only",
+      "fps": 24,
+      "id": 135,
+      "resolution": "854x480",
+      "resolutionName": "480p",
+      "size": "64.65MiB"
+    },
+    {
+      "bps": 1512,
+      "codec": "vp9",
+      "container": "webm",
+      "extra": "only",
+      "fps": 24,
+      "id": 247,
+      "resolution": "1280x720",
+      "resolutionName": "720p",
+      "size": "114.01MiB"
+    },
+    {
+      "bps": 2305,
+      "codec": "avc1.4d401f",
+      "container": "mp4",
+      "extra": "only",
+      "fps": 24,
+      "id": 136,
+      "resolution": "1280x720",
+      "resolutionName": "720p",
+      "size": "119.61MiB"
+    },
+    {
+      "bps": 2644,
+      "codec": "vp9",
+      "container": "webm",
+      "extra": "only",
+      "fps": 24,
+      "id": 248,
+      "resolution": "1920x1080",
+      "resolutionName": "1080p",
+      "size": "198.28MiB"
+    },
+    {
+      "bps": 3878,
+      "codec": "avc1.640028",
+      "container": "mp4",
+      "extra": "only",
+      "fps": 24,
+      "id": 137,
+      "resolution": "1920x1080",
+      "resolutionName": "1080p",
+      "size": "218.99MiB"
+    }
+  ]
+}
 ```
 
 ## Docker

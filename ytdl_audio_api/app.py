@@ -53,15 +53,13 @@ def hello():
     return res
 
 
-@app.route("/api/health")
-@log_request(logger)
+@app.route("/api/health", strict_slashes=False)
 @cross_origin()
 def health(**kwargs):
     return 'OK'
 
 
-@app.route("/api/<yid>/formats/", methods=['GET'])
-@app.route("/api/<yid>/formats", methods=['GET'])
+@app.route("/api/<yid>/formats", methods=['GET'], strict_slashes=False)
 @log_request(logger)
 @cross_origin()
 @cache_aware(cache, 'yt_{yid}_formats')
@@ -74,8 +72,7 @@ def formats(yid, **kwargs):
         return ytdl.format_for_videos([f'https://www.youtube.com/watch?v={yid}'], proxy=FALLBACK_PROXY)[0]
 
 
-@app.route("/api/<yid>/", methods=['GET'])
-@app.route("/api/<yid>", methods=['GET'])
+@app.route("/api/<yid>", methods=['GET'], strict_slashes=False)
 @log_request(logger)
 @cross_origin()
 @cache_aware(cache, 'yt_{yid}_bestaudio', timeout=10 * 60)
@@ -89,12 +86,25 @@ def get_url_default_quality(yid, **kwargs):
         return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], proxy=FALLBACK_PROXY)[0]
 
 
-@app.route("/api/<yid>/<quality_id>/", methods=['GET'])
-@app.route("/api/<yid>/<quality_id>", methods=['GET'])
+@app.route("/api/<yid>/<int:quality_id>", methods=['GET'], strict_slashes=False)
 @log_request(logger)
 @cross_origin()
 @cache_aware(cache, 'yt_{yid}_{quality_id}', timeout=10 * 60)
 def get_url(yid, quality_id, **kwargs):
+    try:
+        return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], str(quality_id), proxy=PROXY)[0]
+    except ytdl.YoutubeDLError as e:
+        if FALLBACK_PROXY is None or FALLBACK_PROXY == '':
+            raise e
+        return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], str(quality_id), proxy=FALLBACK_PROXY)[0]
+
+
+@app.route("/api/<yid>/<int:quality_id1>,<int:quality_id2>", methods=['GET'], strict_slashes=False)
+@log_request(logger)
+@cross_origin()
+@cache_aware(cache, 'yt_{yid}_{quality_id1},{quality_id2}', timeout=10 * 60)
+def get_url_with_video(yid, quality_id1, quality_id2, **kwargs):
+    quality_id = f'{quality_id1},{quality_id2}'
     try:
         return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id, proxy=PROXY)[0]
     except ytdl.YoutubeDLError as e:
@@ -103,8 +113,7 @@ def get_url(yid, quality_id, **kwargs):
         return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id, proxy=FALLBACK_PROXY)[0]
 
 
-@app.route("/api/<yid>/<quality_id>/passthrough/", methods=["HEAD"])
-@app.route("/api/<yid>/<quality_id>/passthrough", methods=["HEAD"])
+@app.route("/api/<yid>/<int:quality_id>/passthrough", methods=["HEAD"], strict_slashes=False)
 @log_request(logger)
 @cross_origin()
 def passthrough_head(yid, quality_id, **kwargs):
@@ -119,8 +128,7 @@ def passthrough_head(yid, quality_id, **kwargs):
         return Response(headers=resp.headers)
 
 
-@app.route("/api/<yid>/<quality_id>/passthrough/", methods=["GET"])
-@app.route("/api/<yid>/<quality_id>/passthrough", methods=["GET"])
+@app.route("/api/<yid>/<int:quality_id>/passthrough", methods=["GET"], strict_slashes=False)
 @log_request(logger)
 @cross_origin()
 def passthrough(yid, quality_id, **kwargs):

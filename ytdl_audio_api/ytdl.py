@@ -34,25 +34,46 @@ def format_for_videos(urls, **kwargs):
                 ydl.extract_info(url, download=False)
                 stringio = io.StringIO(log.get())
                 _ = [stringio.readline() for _ in range(0, 3)]
-                audio_lines = [line[:-1] for line in stringio if 'audio' in line]
-                splitted = [re.compile(r'[ ,]{2,}').split(line) for line in audio_lines]
-                return_val = [{
+                lines = list(stringio)
+                audio_lines = [line[:-1] for line in lines if 'audio' in line]
+                video_lines = [line[:-1] for line in lines if 'video' in line]
+
+                splitted = (re.compile(r'[ ,]{2,}').split(line) for line in audio_lines)
+                audio_qualities = [{
                     'id': int(l[0]),
                     'container': l[1],
                     'bps': int(l[3][0:-1]),
                     'size': l[-1:][0],
-                    'extra': l[-2]
+                    'extra': l[-2],
                 } for l in splitted]
-                results.append(return_val)
+
+                splitted = (re.compile(r'[ ,]+').split(line.replace('webm container,', '')) for line in video_lines)
+                video_qualities = [{
+                    'id': int(l[0]),
+                    'container': l[1],
+                    'resolution': l[2],
+                    'resolutionName': l[3],
+                    'bps': int(l[4][:-1]),
+                    'codec': l[5],
+                    'fps': int(l[6][:-3]),
+                    'size': l[-1:][0],
+                    'extra': l[-2],
+                } for l in splitted]
+
+                model = {
+                    'audio': audio_qualities,
+                    'video': video_qualities,
+                }
+                results.append(model)
                 log.clear()
-                logger.debug('[format_for_videos] Output for %s:\n%s', url, repr(return_val))
+                logger.debug('[format_for_videos] Output for %s:\n%s', url, repr(model))
         except youtube_dl.utils.DownloadError as error:
             logger.warning('[format_for_videos] Error for %s: %s', url, repr(error))
             raise YoutubeDLError(repr(error), url)
         return results
 
 
-def get_urls(urls, quality_id='bestaudio/best', **kwargs):
+def get_urls(urls, quality_id: str='bestvideo/best,bestaudio/best', **kwargs):
     """ Get a list direct audio URL for every video URL, with some extra info """
     log = InMemoryLogger()
     ydl_opts = {
@@ -72,12 +93,15 @@ def get_urls(urls, quality_id='bestaudio/best', **kwargs):
         try:
             for url in urls:
                 ydl.download([url])
-                info = log.get().split('\n')[:-1][-3:]
+                lines = log.get().split('\n')
+                nlines = (quality_id.count(',') + 1) * -3
+                info = lines[:-1][nlines:]
                 return_value = {
                     'title': info[0],
-                    'url': info[1],
-                    'thumbnail': info[2]
+                    'urls': info[1::3],
+                    'thumbnail': info[2],
                 }
+                print(info)
                 results.append(return_value)
                 logger.debug('[get_urls] Output for %s@%s:\n%s', url, quality_id, repr(return_value))
         except youtube_dl.utils.DownloadError as error:
