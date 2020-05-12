@@ -16,6 +16,33 @@ class YoutubeDLError(Exception):
     pass
 
 
+def _parse_video_quality(line: list) -> dict:
+    hdr = line[4].lower() == 'hdr'
+    if hdr:
+        line.remove(line[4])
+    return {
+        'id': int(line[0]),
+        'container': line[1],
+        'resolution': line[2],
+        'resolutionName': line[3],
+        'bps': int(line[4][:-1]),
+        'codec': line[5],
+        'fps': int(line[6][:-3]),
+        'size': line[-1:][0],
+        'hdr': hdr,
+    }
+
+
+def _parse_audio_quality(line: list) -> dict:
+    return {
+        'id': int(line[0]),
+        'container': line[1],
+        'bps': int(line[3][0:-1]),
+        'size': line[-1:][0],
+        'extra': line[-2],
+    }
+
+
 def format_for_videos(urls, **kwargs):
     """ Get a list of formats for every video URL """
     log = InMemoryLogger()
@@ -39,26 +66,10 @@ def format_for_videos(urls, **kwargs):
                 video_lines = [line[:-1] for line in lines if 'video' in line]
 
                 splitted = (re.compile(r'[ ,]{2,}').split(line) for line in audio_lines)
-                audio_qualities = [{
-                    'id': int(l[0]),
-                    'container': l[1],
-                    'bps': int(l[3][0:-1]),
-                    'size': l[-1:][0],
-                    'extra': l[-2],
-                } for l in splitted]
+                audio_qualities = [_parse_audio_quality(l) for l in splitted]
 
                 splitted = (re.compile(r'[ ,]+').split(line.replace('webm container,', '')) for line in video_lines)
-                video_qualities = [{
-                    'id': int(l[0]),
-                    'container': l[1],
-                    'resolution': l[2],
-                    'resolutionName': l[3],
-                    'bps': int(l[4][:-1]),
-                    'codec': l[5],
-                    'fps': int(l[6][:-3]),
-                    'size': l[-1:][0],
-                    'extra': l[-2],
-                } for l in splitted]
+                video_qualities = [_parse_video_quality(l) for l in splitted]
 
                 model = {
                     'audio': audio_qualities,
