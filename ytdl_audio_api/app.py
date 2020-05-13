@@ -106,7 +106,7 @@ def get_url(yid, quality_id, **kwargs):
 @cross_origin()
 @cache_aware(cache, 'yt_{yid}_{quality_id1},{quality_id2}', timeout=10 * 60)
 def get_url_with_video(yid, quality_id1, quality_id2, **kwargs):
-    quality_id = f'{quality_id1},{quality_id2}'
+    quality_id = f'{quality_id1}+{quality_id2}'
     try:
         return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], quality_id, proxy=PROXY)[0]
     except ytdl.YoutubeDLError as e:
