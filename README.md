@@ -53,12 +53,17 @@ An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ>:
 
 ```json
 {
+  "description": "http://KEXP.ORG presents Floating Points performing \"Kuiper\" live in the KEXP studio. Recorded May 3, 2016.\n\nHost: Larry Rose\nAudio Engineer: Michael Parker & Kevin Suggs\nCameras: Jim Beckmann, Alaia D'Alessandro & Scott Holpainen\nEditor: Scott Holpainen\n\nPhoto thumbnail by Matthew B. Thompson\n\nhttp://kexp.org\nhttp://www.floatingpoints.co.uk",
+  "dislikes": 8,
+  "duration": 993,
+  "likes": 864,
   "thumbnail": "https://i.ytimg.com/vi/0RLvtm0EghQ/hqdefault.jpg",
   "title": "Floating Points - Kuiper (Live on KEXP)",
-  "urls": [
-    "https://...",
-    "https://..."
-  ]
+  "urls": {
+    "137": "https://...",
+    "140": "https://..."
+  },
+  "views": 44087
 }
 ```
 
@@ -70,11 +75,16 @@ An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/140>
 
 ```json
 {
+  "description": "http://KEXP.ORG presents Floating Points performing \"Kuiper\" live in the KEXP studio. Recorded May 3, 2016.\n\nHost: Larry Rose\nAudio Engineer: Michael Parker & Kevin Suggs\nCameras: Jim Beckmann, Alaia D'Alessandro & Scott Holpainen\nEditor: Scott Holpainen\n\nPhoto thumbnail by Matthew B. Thompson\n\nhttp://kexp.org\nhttp://www.floatingpoints.co.uk",
+  "dislikes": 8,
+  "duration": 993,
+  "likes": 864,
   "thumbnail": "https://i.ytimg.com/vi/0RLvtm0EghQ/hqdefault.jpg",
   "title": "Floating Points - Kuiper (Live on KEXP)",
-  "urls": [
-    "https://..."
-  ]
+  "urls": {
+    "140": "https://..."
+  },
+  "views": 44087
 }
 ```
 
@@ -86,12 +96,17 @@ An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/140,137>
 
 ```json
 {
+  "description": "http://KEXP.ORG presents Floating Points performing \"Kuiper\" live in the KEXP studio. Recorded May 3, 2016.\n\nHost: Larry Rose\nAudio Engineer: Michael Parker & Kevin Suggs\nCameras: Jim Beckmann, Alaia D'Alessandro & Scott Holpainen\nEditor: Scott Holpainen\n\nPhoto thumbnail by Matthew B. Thompson\n\nhttp://kexp.org\nhttp://www.floatingpoints.co.uk",
+  "dislikes": 8,
+  "duration": 993,
+  "likes": 864,
   "thumbnail": "https://i.ytimg.com/vi/0RLvtm0EghQ/hqdefault.jpg",
   "title": "Floating Points - Kuiper (Live on KEXP)",
-  "urls": [
-    "https://...",
-    "https://..."
-  ]
+  "urls": {
+    "137": "https://...",
+    "140": "https://..."
+  },
+  "views": 44087
 }
 ```
 

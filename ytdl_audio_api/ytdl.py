@@ -17,30 +17,29 @@ class YoutubeDLError(Exception):
     pass
 
 
-def _parse_video_quality(line: list) -> dict:
-    hdr = line[4].lower() == 'hdr'
-    if hdr:
-        line.remove(line[4])
+def _parse_video_quality(fmt: dict) -> dict:
     return {
-        'id': int(line[0]),
-        'container': line[1],
-        'resolution': line[2],
-        'resolutionName': line[3],
-        'bps': int(line[4][:-1]),
-        'codec': line[5],
-        'fps': int(line[6][:-3]),
-        'size': line[-1:][0],
-        'hdr': hdr,
+        'id': int(fmt['format_id']),
+        'container': fmt['ext'],
+        'width': fmt['width'],
+        'height': fmt['height'],
+        'resolutionName': fmt['format_note'],
+        'bps': int(fmt['tbr']),
+        'codec': fmt['vcodec'],
+        'fps': fmt['fps'],
+        'size': fmt['filesize'],
+        'hdr': 'hdr' in fmt['format_note'].lower(),
     }
 
 
-def _parse_audio_quality(line: list) -> dict:
+def _parse_audio_quality(fmt: dict) -> dict:
     return {
-        'id': int(line[0]),
-        'container': line[1],
-        'bps': int(line[3][0:-1]),
-        'size': line[-1:][0],
-        'extra': line[-2],
+        'id': int(fmt['format_id']),
+        'container': fmt['ext'],
+        'bps': int(fmt['tbr']),
+        'sampleRate': int(fmt['asr']),
+        'size': fmt['filesize'],
+        'codec': fmt['acodec'],
     }
 
 
@@ -63,43 +62,30 @@ def _get_video_info(url, **kwargs):
 
 def format_for_videos(urls, **kwargs):
     """ Get a list of formats for every video URL """
-    log = InMemoryLogger()
-    ydl_opts = {
-        'listformats': True,
-        'logger': log,
-        **kwargs,
-    }
-
     joined_kwargs = ', '.join([ f'{k}: {kwargs[k]}' for k in kwargs.keys() ])
     logger.debug(f'format_for_videos: {", ".join(urls)} - {joined_kwargs}')
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        results = []
-        try:
-            for url in urls:
-                ydl.extract_info(url, download=False)
-                stringio = io.StringIO(log.get())
-                _ = [stringio.readline() for _ in range(0, 3)]
-                lines = list(stringio)
-                audio_lines = [line[:-1] for line in lines if 'audio' in line]
-                video_lines = [line[:-1] for line in lines if 'video' in line]
+    results = []
+    try:
+        for url in urls:
+            info = _get_video_info(url, **kwargs)
+            formats = info['formats']
 
-                splitted = (re.compile(r'[ ,]{2,}').split(line) for line in audio_lines)
-                audio_qualities = [_parse_audio_quality(l) for l in splitted]
+            audio_formats = [fmt for fmt in formats if fmt['acodec'] != 'none' and fmt['vcodec'] == 'none']
+            video_formats = [fmt for fmt in formats if fmt['acodec'] == 'none' and fmt['vcodec'] != 'none']
 
-                splitted = (re.compile(r'[ ,]+').split(line.replace('webm container,', '')) for line in video_lines)
-                video_qualities = [_parse_video_quality(l) for l in splitted]
+            audio_qualities = [_parse_audio_quality(l) for l in audio_formats]
+            video_qualities = [_parse_video_quality(l) for l in video_formats]
 
-                model = {
-                    'audio': audio_qualities,
-                    'video': video_qualities,
-                }
-                results.append(model)
-                log.clear()
-                logger.debug('[format_for_videos] Output for %s:\n%s', url, repr(model))
-        except youtube_dl.utils.DownloadError as error:
-            logger.warning('[format_for_videos] Error for %s: %s', url, repr(error))
-            raise YoutubeDLError(repr(error), url)
-        return results
+            model = {
+                'audio': audio_qualities,
+                'video': video_qualities,
+            }
+            results.append(model)
+            logger.debug('[format_for_videos] Output for %s:\n%s', url, repr(model))
+    except youtube_dl.utils.DownloadError as error:
+        logger.warning('[format_for_videos] Error for %s: %s', url, repr(error))
+        raise YoutubeDLError(repr(error), url)
+    return results
 
 
 def get_urls(urls, quality_id: str='bestvideo/best,bestaudio/best', **kwargs):
