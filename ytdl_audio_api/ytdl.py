@@ -112,7 +112,6 @@ def get_urls(urls, quality_id: str='bestvideo/best,bestaudio/best', **kwargs):
                     'urls': info[1::3],
                     'thumbnail': info[2],
                 }
-                print(info)
                 results.append(return_value)
                 logger.debug('[get_urls] Output for %s@%s:\n%s', url, quality_id, repr(return_value))
         except youtube_dl.utils.DownloadError as error:

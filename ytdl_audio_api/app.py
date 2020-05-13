@@ -14,6 +14,8 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.getLevelName(os.environ.get('LOGGING_LEVEL', 'WARN')))
 logger = logging.getLogger(__name__)
 
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = os.environ.get('JSONIFY_PRETTYPRINT_REGULAR', '').lower() == 'true'
+
 if 'REDIS_URL' in os.environ:
     logger.info('Using redis cache "%s"', os.environ['REDIS_URL'])
     cache = Cache(app, config={'CACHE_TYPE': 'redis', 'CACHE_REDIS_URL': os.environ['REDIS_URL']},

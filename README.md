@@ -297,6 +297,10 @@ You can set a proxy with the environment variable `PROXY`. Supported proxy proto
 
 If you want to use a proxy as a fallback, use `FALLBACK_PROXY`. This will be used if any call to the YT API fails.
 
+## Pretty JSONs
+
+If, for some reason, you want to get the JSONs in a pretty format, set `JSONIFY_PRETTYPRINT_REGULAR` environment variable to `true`.
+
   [1]: https://rg3.github.io/youtube-dl/
   [2]: http://flask.pocoo.org
   [3]: https://docker.com
