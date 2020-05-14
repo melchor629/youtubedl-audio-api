@@ -96,7 +96,14 @@ def get_urls(urls, quality_id: str='bestvideo/best,bestaudio/best', **kwargs):
     try:
         for url in urls:
             info = _get_video_info(url, format=quality_id, **kwargs)
-            requested_formats = info.get('requested_formats', [info])
+            if quality_id == 'bestvideo/best,bestaudio/best':
+                formats = info['formats'][::-1]
+                audio_format = next(iter((fmt for fmt in formats if fmt['acodec'] != 'none' and fmt['vcodec'] == 'none')))
+                video_format = next(iter((fmt for fmt in formats if fmt['acodec'] == 'none' and fmt['vcodec'] != 'none')))
+                requested_formats = [video_format, audio_format]
+            else:
+                requested_formats = info.get('requested_formats', [info])
+
             return_value = {
                 'title': info['title'],
                 'description': info['description'],

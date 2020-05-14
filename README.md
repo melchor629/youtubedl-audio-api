@@ -47,7 +47,9 @@ Also, I have an [instance][6] running with a little example.
 
 ### GET /api/\<youtube-id\>
 
-Gets the video and audio URLs, the title and the thumbnail of the video in the best video/audio quality. The urls differ change between calls. The first URL corresponds to the video, and the second one to the audio.
+Gets the video and audio URLs, the title and the thumbnail of the video in the best video/audio quality (or almost). The urls differ change between calls. The first URL corresponds to the video, and the second one to the audio. The qualities selected are the latest in the list of audio (usually the best Opus quality) and the latest video in the list (usually the largest resolution of the video). If another quality is preferred, use below endpoints with explicit quality ID and the `formats` endpoint to get a list of available qualities.
+
+> **NOTE**: the numbers in the `urls` field represent the quality ID being used. The first is always the video track, and the second one the audio one.
 
 An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ>:
 
@@ -61,7 +63,7 @@ An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ>:
   "title": "Floating Points - Kuiper (Live on KEXP)",
   "urls": {
     "137": "https://...",
-    "140": "https://..."
+    "157": "https://..."
   },
   "views": 44087
 }
@@ -69,7 +71,7 @@ An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ>:
 
 ### GET /api/\<youtube-id\>/\<quality-id\>
 
-The same as before, but selecting only a video or audio quality through the id selected. The response will only contain one URL (for the selected quality).
+The same as before, but selecting only a video or audio quality through the id selected. The response will only contain one URL (for the selected quality). The quality ID must be one of the list of availables (see `formats` endpoint).
 
 An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/140>
 
@@ -90,7 +92,7 @@ An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/140>
 
 ### GET /api/\<youtube-id\>/\<quality-id1\>,\<quality-id2\>
 
-The same as before, but changing the video and audio quality to the selected ids. The response will contain two URLs: first corresponding to the `<quality-id1>` and the second one corresponding to `<quality-id2>`. The idea is to put a video and audio qualities, but nothing prevents you to put two videos or two audio qualities.
+The same as before, but changing the video and audio quality to the selected ids. The response will contain two URLs: first corresponding to the `<quality-id1>` and the second one corresponding to `<quality-id2>`. The idea is to put a video and audio qualities, but nothing prevents you to put two videos or two audio qualities. The quality ID must be one of the list of availables (see `formats` endpoint).
 
 An example of <https://youtubeaudio.majorcadevs.com/api/0RLvtm0EghQ/140,137>
 
