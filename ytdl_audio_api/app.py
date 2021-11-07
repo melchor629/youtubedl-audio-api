@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, Response, make_response
 from flask_caching import Cache
 from flask_cors import cross_origin
-from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 import ytdl_audio_api.ytdl as ytdl
 from .decorator import cache_aware, log_request
