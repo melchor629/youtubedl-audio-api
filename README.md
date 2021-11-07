@@ -76,6 +76,10 @@ You can set a proxy with the environment variable `PROXY`. Supported proxy proto
 
 If you want to use a proxy as a fallback, use `FALLBACK_PROXY`. This will be used if any call to the YT API fails.
 
+## CORS
+
+By default, CORS is set to allow all origins. This can be overriden by defining the environment variable `CORS_ORIGINS` with a comma-separatid list of origins.
+
 ## Pretty JSONs
 
 If, for some reason, you want to get the JSONs in a pretty format, set `JSONIFY_PRETTYPRINT_REGULAR` environment variable to `true`.
