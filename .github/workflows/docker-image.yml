@@ -1,0 +1,46 @@
+name: Docker
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: melchor9000/youtubedl-audio-api
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    # Log in into docker hub registry
+    - name: Docker Login
+      uses: docker/login-action@v1.10.0
+      with:
+        username: melchor9000
+        password: '{{ secrets.DOCKER_HUB_TOKEN }}'
+    
+    # Extract som metadata from the image
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        
+    # Build and push image
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        labels: ${{ steps.meta.outputs.labels }}
