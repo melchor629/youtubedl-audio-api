@@ -1,6 +1,6 @@
 # YouTube-DL Audio API
 
-An pythonic RESTful API for getting URL of YouTube videos with only audio or video+audio, perfect for playing in background reducing the network bandwith. Uses [youtube-dl][1] for the queries, and [Flask][2] for the web microframework.
+An pythonic RESTful API for getting URL of YouTube videos with only audio or video+audio, perfect for playing in background reducing the network bandwith. Uses [yt-dlp][1] for the queries, and [Flask][2] for the web microframework.
 
 ## Requirements
 
@@ -84,7 +84,7 @@ By default, CORS is set to allow all origins. This can be overriden by defining 
 
 If, for some reason, you want to get the JSONs in a pretty format, set `JSONIFY_PRETTYPRINT_REGULAR` environment variable to `true`.
 
-  [1]: https://rg3.github.io/youtube-dl/
+  [1]: https://github.com/yt-dlp/yt-dlp
   [2]: http://flask.pocoo.org
   [3]: https://docker.com
   [4]: https://heroku.com

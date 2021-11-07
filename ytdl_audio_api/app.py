@@ -73,7 +73,7 @@ def hello():
 @app.get('/swagger.yaml')
 @app.get('/swagger.yml')
 @log_request(logger)
-@cross_origin(origins='*', methods=['GET'])
+@cross_origin(origins='*')
 def yaml(**kwargs):
     with open('ytdl_audio_api/oas.yaml', 'r') as oas:
         oas_yaml = [line for line in oas]
@@ -87,14 +87,14 @@ def yaml(**kwargs):
 
 
 @app.get('/api/health', strict_slashes=False)
-@cross_origin(origins=CORS_ORIGINS, methods=['GET'])
+@cross_origin(origins=CORS_ORIGINS)
 def health(**kwargs):
     return 'OK'
 
 
 @app.get('/api/<yid>/formats', strict_slashes=False)
 @log_request(logger)
-@cross_origin(origins=CORS_ORIGINS, methods=['GET'])
+@cross_origin(origins=CORS_ORIGINS)
 @cache_aware(cache, 'yt_{yid}_formats')
 def formats(yid, **kwargs):
     try:
@@ -107,7 +107,7 @@ def formats(yid, **kwargs):
 
 @app.get('/api/<yid>', strict_slashes=False)
 @log_request(logger)
-@cross_origin(origins=CORS_ORIGINS, methods=['GET'])
+@cross_origin(origins=CORS_ORIGINS)
 @cache_aware(cache, 'yt_{yid}_bestaudio', timeout=10 * 60)
 def get_url_default_quality(yid, **kwargs):
     logger.info(f'/api/{yid}')
@@ -121,7 +121,7 @@ def get_url_default_quality(yid, **kwargs):
 
 @app.get('/api/<yid>/<int:quality_id>', strict_slashes=False)
 @log_request(logger)
-@cross_origin(origins=CORS_ORIGINS, methods=['GET'])
+@cross_origin(origins=CORS_ORIGINS)
 @cache_aware(cache, 'yt_{yid}_{quality_id}', timeout=10 * 60)
 def get_url(yid, quality_id, **kwargs):
     try:
@@ -134,7 +134,7 @@ def get_url(yid, quality_id, **kwargs):
 
 @app.get('/api/<yid>/<int:quality_id1>,<int:quality_id2>', strict_slashes=False)
 @log_request(logger)
-@cross_origin(origins=CORS_ORIGINS, methods=['GET'])
+@cross_origin(origins=CORS_ORIGINS)
 @cache_aware(cache, 'yt_{yid}_{quality_id1},{quality_id2}', timeout=10 * 60)
 def get_url_with_video(yid, quality_id1, quality_id2, **kwargs):
     quality_id = f'{quality_id1}+{quality_id2}'
@@ -148,7 +148,7 @@ def get_url_with_video(yid, quality_id1, quality_id2, **kwargs):
 
 @app.route('/api/<yid>/<int:quality_id>/passthrough', methods=['HEAD'], strict_slashes=False)
 @log_request(logger)
-@cross_origin(origins=CORS_ORIGINS, methods=['GET', 'HEAD'])
+@cross_origin(origins=CORS_ORIGINS)
 def passthrough_head(yid, quality_id, **kwargs):
     resp = get_url(yid=yid, quality_id=quality_id)
     if resp.status_code == 200:
@@ -163,7 +163,7 @@ def passthrough_head(yid, quality_id, **kwargs):
 
 @app.get('/api/<yid>/<int:quality_id>/passthrough', strict_slashes=False)
 @log_request(logger)
-@cross_origin(origins=CORS_ORIGINS, methods=['GET', 'HEAD'])
+@cross_origin(origins=CORS_ORIGINS)
 def passthrough(yid, quality_id, **kwargs):
     resp = get_url(yid=yid, quality_id=quality_id)
     if resp.status_code == 200:
