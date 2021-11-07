@@ -5,6 +5,7 @@ import os
 from flask import Flask, request, Response, make_response
 from flask_caching import Cache
 from flask_cors import cross_origin
+from werkzeug.contrib.fixers import ProxyFix
 
 import ytdl_audio_api.ytdl as ytdl
 from .decorator import cache_aware, log_request
@@ -35,6 +36,11 @@ if len(CORS_ORIGINS) == 0:
     CORS_ORIGINS = '*'
 elif len(CORS_ORIGINS) == 1 and CORS_ORIGINS[0] == '*':
     CORS_ORIGINS = '*'
+
+if not app.config['DEBUG']:
+    logger.info('Applying proxy fix')
+    # https://werkzeug.palletsprojects.com/en/2.0.x/middleware/proxy_fix/#werkzeug.middleware.proxy_fix.ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app)
 
 
 @app.get("/")
@@ -71,7 +77,8 @@ def hello():
 def yaml(**kwargs):
     with open('ytdl_audio_api/oas.yaml', 'r') as oas:
         oas_yaml = [line for line in oas]
-        oas_yaml[8] = f'- "{request.host_url}"\n'
+        if request.host_url:
+            oas_yaml[8] = f'- url: "{request.host_url}"\n'
         oas_yaml = ''.join(oas_yaml)
 
     response = make_response(oas_yaml)
