@@ -1,0 +1,291 @@
+openapi: 3.0.1
+info:
+  title: Youtube-DL API
+  description: |
+    A simple API that talks to [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) to extract some metadata and URLs for Youtube videos.
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:5000
+
+tags:
+  - name: video
+    description: Video APIs
+
+paths:
+  /api/{id}/formats:
+    get:
+      tags:
+        - video
+      summary: Gets a list of video and audio formats for that video
+      description: |
+        Returns a list of different audio and video formats available in the servers to play directly. The `id` field can be
+        used in the upper section in `{formatId}` path field.
+      operationId: getFormats
+      parameters:
+        - $ref: '#/components/parameters/VideoId'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Formats'
+  /api/{id}:
+    get:
+      tags:
+        - video
+      summary: Gets audio and video URLs alongside with video metadata for the best quality
+      description: |
+        Gets the video and audio URLs, the title and the thumbnail of the video in the best video/audio quality (or almost).
+        The urls may differ between calls. The first URL corresponds to the video, and the second one to the audio.
+        The qualities selected are the latest in the list of audio (usually the best Opus quality) and the latest video in
+        the list (usually the largest in video resolution). If another quality is preferred, use below endpoints with
+        explicit quality ID and the formats endpoint to get a list of available qualities.
+      operationId: getUrlsForBestQuality
+      parameters:
+        - $ref: '#/components/parameters/VideoId'
+      responses:
+        200:
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+  /api/{id}/{formatId}:
+    get:
+      tags:
+        - video
+      summary: Gets the URL for the requested format (either video or audio) alongside with the video metadata
+      description: |
+        Gets the video or audio URLs, the title and the thumbnail of the video of the selected format.
+        The response will only contain one URL which corresponds to the selected format. The `formatId` must be
+        one of the list of availables (see formats endpoint).
+      operationId: getUrlForFormat
+      parameters:
+        - $ref: '#/components/parameters/VideoId'
+        - name: formatId
+          in: path
+          description: The format id
+          required: true
+          example: 140
+          schema:
+            type: number
+            format: int32
+      responses:
+        200:
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+  /api/{id}/{formatId1},{formatId2}:
+    get:
+      tags:
+        - video
+      summary: Gets the URL for the requested formats (either video and audio) alongside with the video metadata
+      description: |
+        Gets the video or audio URLs, the title and the thumbnail of the video for the selected format. The response
+        will contain two URLs:
+          - first corresponding to the `{formatId1}`
+          - the second one corresponding to `{formatId2}`.
+
+        The idea is to put a video and audio formats, but nothing prevents you to put two videos or two audio formats.
+        The `formatId` must be one of the list of availables (see formats endpoint).
+      operationId: getUrlForFormats
+      parameters:
+        - $ref: '#/components/parameters/VideoId'
+        - name: formatId1
+          in: path
+          description: The first format id
+          required: true
+          example: 140
+          schema:
+            type: number
+            format: int32
+        - name: formatId2
+          in: path
+          description: The second format id
+          required: true
+          example: 137
+          schema:
+            type: number
+            format: int32
+      responses:
+        200:
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+  /api/{id}/{formatId}/passthrough:
+    get:
+      tags:
+        - video
+      summary: Gets the bytes for the requested format through the API acting as a proxy
+      operationId: getStreamForFormat
+      parameters:
+        - $ref: '#/components/parameters/VideoId'
+        - name: formatId
+          in: path
+          description: The format id
+          required: true
+          schema:
+            type: number
+            format: int32
+      responses:
+        200:
+          description: Stream
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: bytes
+  /api/health:
+    get:
+      summary: Health check
+      operationId: health
+      responses:
+        200:
+          description: Cool health check
+          content:
+            text/plain:
+              schema:
+                type: string
+                enum: ['OK']
+
+components:
+  parameters:
+    VideoId:
+      name: id
+      in: path
+      description: The ID of the video, which is the part that follows after `youtube.com/watch?v=<id>` or `youtu.be/<id>`.
+      required: true
+      example: '0RLvtm0EghQ'
+      schema:
+        type: string
+  schemas:
+    Formats:
+      type: object
+      properties:
+        audio:
+          type: array
+          items:
+            $ref: '#/components/schemas/AudioFormat'
+        video:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoFormat'
+    AudioFormat:
+      type: object
+      required:
+        - id
+        - container
+        - bps
+        - sampleRate
+        - size
+        - codec
+      properties:
+        id:
+          type: number
+          format: int64
+        container:
+          type: string
+          example: 'webm'
+        bps:
+          type: number
+        sampleRate:
+          type: number
+          format: int64
+          example: 48000
+        size:
+          type: number
+          format: int64
+        codec:
+          type: string
+          example: 'opus'
+    VideoFormat:
+      type: object
+      required:
+        - id
+        - container
+        - width
+        - height
+        - resolutionName
+        - bps
+        - codec
+        - fps
+        - size
+        - hdr
+      properties:
+        id:
+          type: number
+          format: int64
+        container:
+          type: string
+          example: 'webm'
+        width:
+          type: number
+          format: int64
+        height:
+          type: number
+          format: int64
+        resolutionName:
+          type: string
+          example: '2160p'
+        bps:
+          type: number
+        codec:
+          type: string
+          example: 'vp9'
+        fps:
+          type: number
+          format: int64
+        size:
+          type: number
+          format: int64
+        hdr:
+          type: boolean
+    Metadata:
+      type: object
+      required:
+        - title
+        - description
+        - thumbnail
+        - likes
+        - dislikes
+        - views
+        - urls
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: number
+          format: int64
+        thumbnail:
+          type: string
+          format: url
+        likes:
+          type: number
+          format: int64
+        dislikes:
+          type: number
+          format: int64
+        views:
+          type: number
+          format: int64
+        urls:
+          type: object
+          title: URLs for each requested format
+          description: Each property refers to the requested format id and the value is the URL to access to that resource
+          minProperties: 1
+          maxProperties: 2
+          additionalProperties:
+            type: string
+            format: url
+            title: URL for the resource
+          example:
+            251: 'https://example.com'
+            313: 'https://example.com'

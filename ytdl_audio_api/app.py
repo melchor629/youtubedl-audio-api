@@ -42,7 +42,9 @@ def hello():
 <body>
     <p>
         Want to know how it works? See
-        <a href="https://github.com/melchor629/youtubedl-audio-api" target="_blank" rel="nofollow">the repo</a>
+        <a href="https://github.com/melchor629/youtubedl-audio-api" target="_blank" rel="nofollow">the repo</a>.
+        Also it is available the OpenAPI spec to check it out:
+        <a href="oas.yaml" target="_blank" rel="nofollow">oas.yaml</a>.
     </p>
     <p>
         Want an example?
@@ -53,6 +55,22 @@ def hello():
     ''')  # type: Response
     res.headers.add_header('Cache-Control', 'private, max-age=86400')
     return res
+
+@app.route('/oas.yaml')
+@app.route('/oas.yml')
+@app.route('/swagger.yaml')
+@app.route('/swagger.yml')
+@log_request(logger)
+@cross_origin()
+def yaml(**kwargs):
+    with open('ytdl_audio_api/oas.yaml', 'r') as oas:
+        oas_yaml = [line for line in oas]
+        oas_yaml[8] = f'- "{request.host_url}"\n'
+        oas_yaml = ''.join(oas_yaml)
+
+    response = make_response(oas_yaml)
+    response.headers['Content-Type'] = 'application/x-yaml'
+    return response
 
 
 @app.route("/api/health", strict_slashes=False)
