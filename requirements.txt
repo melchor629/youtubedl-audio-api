@@ -1,4 +1,4 @@
-Flask == 1.*
+Flask == 2.*
 Flask-Cors == 3.*
 Flask-Caching == 1.*
 redis == 3.*
@@ -7,4 +7,4 @@ gunicorn == 20.*
 gunicorn[gevent]
 gevent == 20.*
 requests == 2.*
-Werkzeug == 1.*
+Werkzeug == 2.*

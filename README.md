@@ -4,7 +4,7 @@ An pythonic RESTful API for getting URL of YouTube videos with only audio or vid
 
 ## Requirements
 
-The project requires Python 3.3 or higher, and install some dependencies.
+The project requires Python 3.6 or higher, and install some dependencies.
 
 ```bash
 pip install -r requirements.txt
