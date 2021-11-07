@@ -2,7 +2,7 @@ Flask == 1.*
 Flask-Cors == 3.*
 Flask-Caching == 1.*
 redis == 3.*
-youtube-dl
+yt-dlp
 gunicorn == 20.*
 gunicorn[gevent]
 gevent == 20.*

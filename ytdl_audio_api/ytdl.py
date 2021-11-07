@@ -4,7 +4,7 @@ Utilities to get information from Youtube-DL
 import io
 import logging
 import re
-import youtube_dl
+import yt_dlp
 from flask import json
 from .logger import InMemoryLogger
 
@@ -24,7 +24,7 @@ def _parse_video_quality(fmt: dict) -> dict:
         'width': fmt['width'],
         'height': fmt['height'],
         'resolutionName': fmt['format_note'],
-        'bps': int(fmt['tbr']),
+        'bps': float(fmt['tbr']),
         'codec': fmt['vcodec'],
         'fps': fmt['fps'],
         'size': fmt['filesize'],
@@ -36,7 +36,7 @@ def _parse_audio_quality(fmt: dict) -> dict:
     return {
         'id': int(fmt['format_id']),
         'container': fmt['ext'],
-        'bps': int(fmt['tbr']),
+        'bps': float(fmt['tbr']),
         'sampleRate': int(fmt['asr']),
         'size': fmt['filesize'],
         'codec': fmt['acodec'],
@@ -53,7 +53,7 @@ def _get_video_info(url, **kwargs):
         **kwargs,
     }
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
         lines = log.get().split('\n')
         info = json.loads(lines[-2])
@@ -82,7 +82,7 @@ def format_for_videos(urls, **kwargs):
             }
             results.append(model)
             logger.debug('[format_for_videos] Output for %s:\n%s', url, repr(model))
-    except youtube_dl.utils.DownloadError as error:
+    except yt_dlp.utils.DownloadError as error:
         logger.warning('[format_for_videos] Error for %s: %s', url, repr(error))
         raise YoutubeDLError(repr(error), url)
     return results
@@ -116,7 +116,7 @@ def get_urls(urls, quality_id: str='bestvideo/best,bestaudio/best', **kwargs):
             }
             results.append(return_value)
             logger.debug('[get_urls] Output for %s@%s:\n%s', url, quality_id, repr(return_value))
-    except youtube_dl.utils.DownloadError as error:
+    except yt_dlp.utils.DownloadError as error:
         logger.warning('[format_for_videos] Error for %s@%s: %s', url, quality_id, repr(error)[:-3])
         raise YoutubeDLError(repr(error)[:-3], url)
     return results
