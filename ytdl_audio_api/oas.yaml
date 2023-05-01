@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: Youtube-DL API
   description: |
@@ -52,6 +52,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Metadata'
+  /api/{id}/raw:
+    get:
+      tags:
+        - video
+      summary: Gets the raw json from yt-dlp for the video.
+      description: |
+        Returns the raw JSON from yt-dlp without any alterations. Use it to retrieve all extracted information from the
+        video, with all audios, videos, subtitles, previews, thumbnails...
+      operationId: getRawVideoInformation
+      parameters:
+        - $ref: '#/components/parameters/VideoId'
+      responses:
+        200:
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawMetadata'
   /api/{id}/{formatId}:
     get:
       tags:
@@ -185,6 +203,7 @@ components:
         - sampleRate
         - size
         - codec
+        - channels
       properties:
         id:
           type: number
@@ -204,6 +223,10 @@ components:
         codec:
           type: string
           example: 'opus'
+        channels:
+          type: number
+          format: int64
+          example: 2
     VideoFormat:
       type: object
       required:
@@ -273,6 +296,7 @@ components:
         dislikes:
           type: number
           format: int64
+          nullable: true
         views:
           type: number
           format: int64
@@ -289,3 +313,6 @@ components:
           example:
             251: 'https://example.com'
             313: 'https://example.com'
+    RawMetadata:
+      type: object
+      additionalProperties: true

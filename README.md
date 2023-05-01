@@ -4,20 +4,13 @@ An pythonic RESTful API for getting URL of YouTube videos with only audio or vid
 
 ## Requirements
 
-The project requires Python 3.6 or higher, and install some dependencies.
+The project requires Python 3.10 or higher, and install some dependencies.
 
 ```bash
-pip install -r requirements.txt
+pipenv install
 ```
 
-For local development, a `pyenv` or `virtualenv` is highly recomended. There's a [Dockerfile][3] available for creating an image.
-
-For **macOS**, use `brew` to install python 3:
-
-```bash
-brew install python3
-pip3 install -r requirements.txt
-```
+For local development, `pipenv` will create a virtual environment for you. There's a [Dockerfile][3] available for creating an image.
 
 You can use the Docker image to use it in development. (see Docker section) This command should do the trick:
 
@@ -27,7 +20,7 @@ docker container run --rm -it -p 5000:5000 melchor9000/youtubedl-audio-api
 
 ## Using the web
 
-By default, running the app with `python app.py` will run on http://localhost:5000 . If you set the environment variable `PORT` to some port, it will listen for everyone at the specified port.
+By default, running the app with `flask --app ytdl_audio_api.app run --debug` will run on http://localhost:5000 . If you set the environment variable `PORT` to some port, it will listen for everyone at the specified port.
 
 The app can be scalated using `gunicorn -c gunicorn_config.py ytdl_audio_api.wsgi`. Is configured to use `gevent` for asynchronous serving.
 

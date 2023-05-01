@@ -12,7 +12,7 @@ from .decorator import cache_aware, log_request
 from .http_pipe import pipe, pipe_headers
 
 app = Flask(__name__)
-logging.basicConfig(level=logging.getLevelName(os.environ.get('LOGGING_LEVEL', 'WARN')))
+logging.basicConfig(level=logging.getLevelName(os.environ.get('LOGGING_LEVEL', 'DEBUG' if app.debug else 'WARN')))
 logger = logging.getLogger(__name__)
 
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = os.environ.get('JSONIFY_PRETTYPRINT_REGULAR', '').lower() == 'true'
@@ -117,6 +117,20 @@ def get_url_default_quality(yid, **kwargs):
         if FALLBACK_PROXY is None or FALLBACK_PROXY == '':
             raise e
         return ytdl.get_urls([f'https://www.youtube.com/watch?v={yid}'], proxy=FALLBACK_PROXY)[0]
+
+
+@app.get('/api/<yid>/raw', strict_slashes=False)
+@log_request(logger)
+@cross_origin(origins=CORS_ORIGINS)
+@cache_aware(cache, 'yt_{yid}_bestaudio', timeout=10 * 60)
+def get_raw_format(yid, **kwargs):
+    logger.info(f'/api/{yid}/raw')
+    try:
+        return ytdl.get_video_info([f'https://www.youtube.com/watch?v={yid}'], proxy=PROXY)[0]
+    except ytdl.YoutubeDLError as e:
+        if FALLBACK_PROXY is None or FALLBACK_PROXY == '':
+            raise e
+        return ytdl.get_video_info([f'https://www.youtube.com/watch?v={yid}'], proxy=FALLBACK_PROXY)[0]
 
 
 @app.get('/api/<yid>/<int:quality_id>', strict_slashes=False)
