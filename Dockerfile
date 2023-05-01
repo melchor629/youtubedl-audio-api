@@ -1,12 +1,19 @@
-FROM python:3
+FROM python:3.11-alpine AS requirements
 
-RUN mkdir -p /opt/yt-audio-api/ytdl_audio_api
-COPY requirements.txt gunicorn_config.py /opt/yt-audio-api/
-RUN pip install --no-cache-dir -r /opt/yt-audio-api/requirements.txt
-COPY ytdl_audio_api /opt/yt-audio-api/ytdl_audio_api
+WORKDIR /app
+RUN pip install pipenv
+COPY Pipfile Pipfile.lock ./
+RUN pipenv requirements > requirements.txt
+
+
+FROM python:3.11-alpine
+
+WORKDIR /opt/yt-audio-api
+COPY gunicorn_config.py ./
+COPY --from=requirements /app/requirements.txt ./
+RUN pip install --no-cache-dir -r ./requirements.txt
+COPY ytdl_audio_api/ ./ytdl_audio_api/
 
 ENV PORT 5000
-EXPOSE 5000
 
-WORKDIR /opt/yt-audio-api/
 CMD [ "gunicorn", "-c", "gunicorn_config.py", "ytdl_audio_api.wsgi" ]

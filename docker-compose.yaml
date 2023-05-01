@@ -1,18 +1,30 @@
 version: "3"
 
 services:
-  ytdl-audio-api:
+  api:
     image: melchor9000/youtubedl-audio-api
     ports:
       - "5000:5000"
     environment:
       REDIS: "redis://cache:6379/1"
       LOGGING_LEVEL: "DEBUG" #Change the logging level, use values from python logging package
+      #PROXY: "socks5://proxy:9050"
     volumes: [ ".:/opt/yt-audio-api" ] #Use it while programming
     depends_on:
       - cache
 
   cache:
     image: redis
-    expose:
-      - "6379"
+    ports:
+      - "6379:6379"
+
+  proxy:
+    image: amgxv/tor
+    tty: true
+    volumes: [ "tor:/etc/tor" ]
+    ports:
+      - "9050:9050"
+    #docker run -td -p 127.0.0.1:9050:9050 -v /opt/tor:/etc/tor/ --name tor amgxv/tor
+
+volumes:
+  tor:

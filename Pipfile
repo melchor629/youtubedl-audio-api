@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "==2.*"
+flask-cors = "==3.*"
+flask-caching = "==2.*"
+redis = "==4.*"
+yt-dlp = "*"
+gunicorn = {extras = ["gevent"], version = "==20.*"}
+gevent = "==22.*"
+requests = "==2.*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
