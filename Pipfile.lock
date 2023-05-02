@@ -214,7 +214,7 @@
                 "sha256:f8303414c7b03f794347ad062c0516cee0e15f7a612abd0ce1e25caf6ceb47df",
                 "sha256:fca62a8301b605b954ad2e9c3666f9d97f63872aa4efcae5492baca2056b74ab"
             ],
-            "markers": "python_full_version >= '3.7.0'",
+            "markers": "python_version >= '3.7'",
             "version": "==3.1.0"
         },
         "click": {
@@ -227,11 +227,11 @@
         },
         "flask": {
             "hashes": [
-                "sha256:8ba2a854608fdd603b67dccd4514a46450132227fb9df40127a8d0c1de8769ec",
-                "sha256:a6059db4297106e5a64b3215fa16ae641822c1cb97ecb498573549b2478602cb"
+                "sha256:77fd4e1249d8c9923de34907236b747ced06e5467ecac1a7bb7115ae0e9670b0",
+                "sha256:8c2f9abd47a9e8df7f0c3f091ce9497d011dc3b31effcf4c85a6e2b50f4114ef"
             ],
             "index": "pypi",
-            "version": "==2.3.1"
+            "version": "==2.3.2"
         },
         "flask-caching": {
             "hashes": [
@@ -629,11 +629,11 @@
         },
         "werkzeug": {
             "hashes": [
-                "sha256:2f3278e9ef61511cdf82cc28fc5da0f5b501dd8f01ecf5ef6a5d810048f68702",
-                "sha256:b7b8bc1609f35ae8e45d48a9b58d7a4eb1e41eec148d37e977e5df6ebf3398b2"
+                "sha256:4866679a0722de00796a74086238bb3b98d90f423f05de039abb09315487254a",
+                "sha256:a987caf1092edc7523edb139edb20c70571c4a8d5eed02e0b547b4739174d091"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==2.3.2"
+            "version": "==2.3.3"
         },
         "yt-dlp": {
             "hashes": [
