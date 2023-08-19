@@ -3,7 +3,7 @@ Utilities to get information from Youtube-DL
 """
 import logging
 import subprocess
-from typing import List
+from typing import List, Tuple
 from flask import json
 
 
@@ -72,6 +72,20 @@ def _get_video_info(url: str, **kwargs) -> dict:
     return info[0]
 
 
+def _get_formats(formats: dict) -> Tuple[dict, dict]:
+    audio_formats = [
+        fmt
+        for fmt in formats
+        if fmt.get('acodec', 'none') != 'none' and fmt.get('vcodec', 'none') == 'none'
+    ]
+    video_formats = [
+        fmt
+        for fmt in formats
+        if fmt.get('acodec', 'none') == 'none' and fmt.get('vcodec', 'none') != 'none'
+    ]
+    return audio_formats, video_formats
+
+
 def get_video_info(url: str, **kwargs) -> dict:
     """ Gets what yt-dlp returns for the video """
     return _get_video_info(url, **kwargs)
@@ -87,8 +101,7 @@ def format_for_videos(urls: List[str], **kwargs):
         info = _get_video_info(url, **kwargs)
         formats = info['formats']
 
-        audio_formats = [fmt for fmt in formats if fmt['acodec'] != 'none' and fmt['vcodec'] == 'none']
-        video_formats = [fmt for fmt in formats if fmt['acodec'] == 'none' and fmt['vcodec'] != 'none']
+        audio_formats, video_formats = _get_formats(formats)
 
         audio_qualities = [_parse_audio_quality(l) for l in audio_formats]
         video_qualities = [_parse_video_quality(l) for l in video_formats]
@@ -113,9 +126,8 @@ def get_urls(urls: List[str], quality_id: str='bestvideo/best+bestaudio/best', *
         info = _get_video_info(url, format=quality_id, **kwargs)
         if quality_id == 'bestvideo/best+bestaudio/best':
             formats = info['formats'][::-1]
-            audio_format = next(iter((fmt for fmt in formats if fmt['acodec'] != 'none' and fmt['vcodec'] == 'none')))
-            video_format = next(iter((fmt for fmt in formats if fmt['acodec'] == 'none' and fmt['vcodec'] != 'none')))
-            requested_formats = [video_format, audio_format]
+            audio_formats, video_formats = _get_formats(formats)
+            requested_formats = [video_formats[0], audio_formats[0]]
         else:
             requested_formats = info.get('requested_formats', [info])
 
