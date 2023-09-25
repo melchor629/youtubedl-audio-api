@@ -10,7 +10,7 @@ flask-caching = "==2.*"
 redis = "==4.*"
 yt-dlp = "*"
 gunicorn = {extras = ["gevent"], version = "==20.*"}
-gevent = "==22.*"
+gevent = "==23.*"
 requests = "==2.*"
 
 [dev-packages]
