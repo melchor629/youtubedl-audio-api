@@ -1,4 +1,4 @@
-FROM python:3.11-alpine AS requirements
+FROM python:3.12-alpine AS requirements
 
 WORKDIR /app
 RUN pip install pipenv
@@ -6,7 +6,7 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv requirements > requirements.txt
 
 
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
 WORKDIR /opt/yt-audio-api
 COPY gunicorn_config.py ./
