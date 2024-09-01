@@ -30,12 +30,6 @@ You can deploy the app to [Heroku][4] or into a [Docker][3] environment.
 > environment variable. In Heroku this is mandatory, so add a "Config Var" called `WORKERS` and put
 > a value of 1 or 2 (if using the free dyno).
 
-## Example
-
-We did [a demo page][5] for that.
-
-Also, I have an [instance][6] running with a little example.
-
 ## RESTful API
 
 The API is described in the [OpenApi Schema][oas] or in the `/oas.yaml`/`/swagger.yaml` of a deployed service. Use <https://editor.swagger.io>, <https://petstore.swagger.io> (filling the URL at the top) or any other Swagger UI instance to see the API and its documentation.
@@ -61,7 +55,7 @@ Some request can be cached using Redis. The only thing you must do to use Redis 
 variable `REDIS` (or `REDIS_URL` useful for Heroku) with the url of the server.
 
 ## Logging
-The server has logging for some points of functions. To modify the logging level, set `LOGGING_LEVEL` environment variable to the value you want. Valid values are `CRITICAL`, `FATAL`, `ERROR`, `WARNING`, `WARN`, `INFO`, `DEBUG` or `NOTSET`, see [logging][7] from Python.
+The server has logging for some points of functions. To modify the logging level, set `LOGGING_LEVEL` environment variable to the value you want. Valid values are `CRITICAL`, `FATAL`, `ERROR`, `WARNING`, `WARN`, `INFO`, `DEBUG` or `NOTSET`, see [logging][5] from Python.
 
 ## Proxy
 
@@ -81,7 +75,5 @@ If, for some reason, you want to get the JSONs in a pretty format, set `JSONIFY_
   [2]: http://flask.pocoo.org
   [3]: https://docker.com
   [4]: https://heroku.com
-  [5]: https://github.com/MajorcaDevs/youtubeAudio
-  [6]: https://youtubeaudio.majorcadevs.com/api/
-  [7]: https://docs.python.org/3/library/logging.html#logging-levels
+  [5]: https://docs.python.org/3/library/logging.html#logging-levels
   [oas]: https://github.com/melchor629/youtubedl-audio-api/blob/master/ytdl_audio_api/oas.yaml
