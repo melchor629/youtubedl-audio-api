@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 flask = "==2.*"
-flask-cors = "==4.*"
+flask-cors = "==5.*"
 flask-caching = "==2.*"
 redis = "==4.*"
 yt-dlp = "*"
