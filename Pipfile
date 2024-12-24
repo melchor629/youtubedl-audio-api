@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "==2.*"
+flask = "==3.*"
 flask-cors = "==5.*"
 flask-caching = "==2.*"
-redis = "==4.*"
+redis = "==5.*"
 yt-dlp = "*"
-gunicorn = {extras = ["gevent"], version = "==22.*"}
-gevent = "==23.*"
+gunicorn = {extras = ["gevent"], version = "==23.*"}
+gevent = "==24.*"
 requests = "==2.*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
