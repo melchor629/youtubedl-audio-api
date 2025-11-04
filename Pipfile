@@ -7,10 +7,10 @@ name = "pypi"
 flask = "==3.*"
 flask-cors = "==6.*"
 flask-caching = "==2.*"
-redis = "==5.*"
+redis = "==7.*"
 yt-dlp = "*"
 gunicorn = {extras = ["gevent"], version = "==23.*"}
-gevent = "==24.*"
+gevent = "==25.*"
 requests = "==2.*"
 
 [dev-packages]
