@@ -500,12 +500,12 @@
         },
         "yt-dlp": {
             "hashes": [
-                "sha256:9c803a9598859f91d0d5bd3337f1506ecb40bbe97f6efbe93bc4461fed344fb2",
-                "sha256:db2d48133222b1d9508c6de757859c24b5cefb9568cf68ccad85dac20b07f77b"
+                "sha256:0d8408f5b6d20487f5caeb946dfd04f9bcd2f1a3a125b744a0a982b590e449f7",
+                "sha256:4407dfc1a71fec0dee5ef916a8d4b66057812939b509ae45451fa8fb4376b539"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==2025.10.22"
+            "version": "==2026.2.21"
         },
         "zope.event": {
             "hashes": [
